@@ -1,13 +1,13 @@
 var fs = require("fs");
 
-module.exports = function() {
+module.exports = function(bot) {
     return {
         init: function() {
             var list = [];
             console.log("initscripts.js->init: initializing scripts");
             var files = fs.readdirSync("./scripts");
             for (var i = 0; i < files.length; i++) {
-                list[files[i]] = require("../scripts/" + files[i]);
+                list[files[i]] = require("../scripts/" + files[i])(bot);
                 console.log("initscripts.js->init: registered " + files[i]);
             }
             console.log("initscripts.js->init: completed script initialization with " + Object.keys(list).length + " file(s)");
