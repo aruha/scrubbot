@@ -1,2 +1,3 @@
-node "S:\Node\scrubbot\js\listener.js"
+cd "%~dp0"
+node "js\listener.js"
 pause
