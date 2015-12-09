@@ -1,8 +1,3 @@
-/*
-** this is hella gay to be honest
-** todo: redo valid command check with regex
-**       stop acting dumb
-*/
 var Discord = require("discord.js");
 var config = require("../json/config.json");
 //var commands = require("../json/commands.json");
@@ -34,9 +29,5 @@ bot.on("message", function(message){
 
 atlas = scripts.init();
 cList = scripts.formranks(atlas);
-
-//for (var i = 0; i < cList.length; i++) {
-//    console.log(cList[i].cmd);
-//}
 
 bot.login(config.credentials.email, config.credentials.password);
