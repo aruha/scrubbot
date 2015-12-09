@@ -1,6 +1,6 @@
 var Discord = require("discord.js");
 var bot = new Discord.Client();
-var nobu = false;
+
 var config = require("../json/config.json");
 var scripts = require("./initscripts.js")(bot);
 
@@ -35,12 +35,9 @@ bot.on("message", function(message){
             out = out + "``" + cList[i].cmd + "`` ";
         }
         bot.sendMessage(message.channel, "Available commands: " + out);
-    } else if (words[0] == "!nobu") { //but why?
-        nobu = !nobu;
     } else if (words[0].match(/!([A-z])\w/g) != null && permissions.hasPermission("sendMessages")) {
         console.log("event: registered call to " + words[0] + " command");
         handler(words[0], message);
-        if (nobu) bot.sendMessage(message.channel, "Nobu!");
     } else if (words[0][0] == "!") {
         console.log("error: invalid command given");
         bot.sendMessage(message.channel, "Invalid command. Use ``!help`` for a list of available commands.");
