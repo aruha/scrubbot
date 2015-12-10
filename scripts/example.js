@@ -8,12 +8,12 @@
     fn: the function to run once someone issues the command
     file: the filename. should always be fn
 */
-const fn = __filename.slice(__dirname.length + 1)
+const fileName = __filename.slice(__dirname.length + 1)
 var commands = [
-    { cmd: "!ping", fn: "ping", file: fn }
+    { cmd: "!ping", fn: "ping", file: fileName }
 ];
 
-module.exports = function(bot) {
+module.exports = function(bot, sendSync) {
     return {
         commands: commands,
         ping: function (message) {

@@ -1,15 +1,15 @@
-const fn = __filename.slice(__dirname.length + 1)
+const fileName = __filename.slice(__dirname.length + 1)
 var commands = [
-    { cmd: "!dice", fn: "dice", file: fn }
+    { cmd: "!dice", fn: "dice", file: fileName }
 ];
 
-module.exports = function(bot) {
+module.exports = function(bot, sendSync) {
     return {
         commands: commands,
         dice: function (message) {
             var words = message.content.split(" "), total = 0;
             
-            if (words.length == 2 && words[1] == "?") {
+            if (words.length === 2 && words[1] === "?") {
                 bot.sendMessage(message.channel, "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice [number of dice] [max value of one die] _[bonus]_");
                 return;
             }            
