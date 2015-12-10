@@ -10,7 +10,8 @@ var commands = [
     { cmd: "!navyseals", fn: "simple", file: fileName },
     { cmd: "!hagay", fn: "simple", file: fileName },
     { cmd: "!sadface", fn: "simple", file: fileName },
-    { cmd: "!ayylmao", fn: "simple", file: fileName }
+    { cmd: "!ayylmao", fn: "simple", file: fileName },
+    { cmd: "!getout", fn: "getout", file: fileName }
 ];
 
 var responseList = [], sequentialList = [];
@@ -50,6 +51,15 @@ module.exports = function(bot, sendSync) {
                 }
             }
             return sendSync;
+        },
+        getout: function (message) {
+            var words = message.content.split(" ");
+            if (words.length != 2) {
+                poorSyntax("!getout", message);
+                return;
+            } else {
+                bot.sendMessage(message.channel, words[1] + " get out");
+            }
         }
     };
 }
