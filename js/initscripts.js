@@ -15,9 +15,9 @@ module.exports = function(bot, sendSync) {
             console.log("initscripts.js->init: completed script initialization with " + Object.keys(list).length + " file(s)");
             return list;
         },
-        loadclist: function(list) {
+        loadCList: function(list) {
             var cmdlist = [], index = 0;
-            console.log("initscripts.js->loadclist: initializing command list");
+            console.log("initscripts.js->loadCList: initializing command list");
             for (key_name in list) {
                 for (var j = 0; j < list[key_name].commands.length; j++) {
                     for (var k = 0; k < cmdlist.length; k++) {
@@ -27,12 +27,20 @@ module.exports = function(bot, sendSync) {
                         }
                     }
                     cmdlist[index++] = list[key_name].commands[j];
-                    console.log("initscripts.js->loadclist: registered " + list[key_name].commands[j].cmd 
+                    console.log("initscripts.js->loadCList: registered " + list[key_name].commands[j].cmd 
                                 + " to " + list[key_name].commands[j].fn + " in " + list[key_name].commands[j].file);
                 }
             }
-            console.log("initscripts.js->loadclist: finished initializing command list with " + cmdlist.length + " command(s)");
+            console.log("initscripts.js->loadCList: finished initializing command list with " + cmdlist.length + " command(s)");
             return cmdlist;
+        },
+        loadAdmins: function(cfg) {
+            bot.admins = [];
+            for (var i = 0; i < cfg.admins.length; i++) {
+                bot.admins[i] = cfg.admins;
+                console.log("initscripts.js->loadAdmins: added admin with user id " + bot.admins[i]);
+            }
+            return bot.admins;
         }
     };
 }
