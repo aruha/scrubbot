@@ -16,7 +16,8 @@ module.exports = function(bot, sendSync) {
             return list;
         },
         loadCList: function(list) {
-            var cmdlist = [], index = 0;
+            var cmdlist = [],
+                index = 0;
             console.log("initscripts.js->loadCList: initializing command list");
             for (key_name in list) {
                 for (var j = 0; j < list[key_name].commands.length; j++) {
@@ -27,8 +28,7 @@ module.exports = function(bot, sendSync) {
                         }
                     }
                     cmdlist[index++] = list[key_name].commands[j];
-                    console.log("initscripts.js->loadCList: registered " + list[key_name].commands[j].cmd 
-                                + " to " + list[key_name].commands[j].fn + " in " + list[key_name].commands[j].file);
+                    console.log("initscripts.js->loadCList: registered " + list[key_name].commands[j].cmd + " to " + list[key_name].commands[j].fn + " in " + list[key_name].commands[j].file);
                 }
             }
             console.log("initscripts.js->loadCList: finished initializing command list with " + cmdlist.length + " command(s)");

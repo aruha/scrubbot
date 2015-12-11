@@ -1,7 +1,7 @@
 var Discord = require("discord.js");
 var bot = new Discord.Client();
 
-session = function (n_msg, n_cmd) {
+session = function(n_msg, n_cmd) {
     this.msg = n_msg;
     this.cmd = n_cmd;
     this.seqn = -1;
@@ -32,7 +32,6 @@ poorSyntax = function(command, message) {
 
 handler = function(command, message) {
     var commandEntry = null;
-    
     for (var i = 0; i < cList.length; i++) {
         if (cList[i].cmd === command) {
             commandEntry = cList[i];
@@ -44,11 +43,11 @@ handler = function(command, message) {
         bot.sendMessage(message.channel, "Invalid command. Use ``!help`` for a list of available commands.");
         return;
     }
-    if (commandEntry.cmd.slice(0,2) === "!!" && !checkPermissions(message)) return;
+    if (commandEntry.cmd.slice(0, 2) === "!!" && !checkPermissions(message)) return;
     sendSync = atlas[commandEntry.file][commandEntry.fn](message);
 }
 
-bot.on("message", function(message){
+bot.on("message", function(message) {
     if (message.channel.recipient) { //ignore pms
         console.log("received pm");
         return;
@@ -56,16 +55,14 @@ bot.on("message", function(message){
 
     var words = message.content.split(" ");
     var permissions = message.channel.permissionsOf(bot.user);
-    
     if (sendSync) {
         handler(sendSync.cmd, sendSync.msg);
     }
-    
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
         var out = "";
         for (var i = 0; i < cList.length; i++) {
-            if (cList[i].cmd.slice(0,2) !== "!!") {
+            if (cList[i].cmd.slice(0, 2) !== "!!") {
                 out = out + "``" + cList[i].cmd + "`` ";
             }
         }
