@@ -70,7 +70,7 @@ bot.on("message", function(message){
             }
         }
         bot.sendMessage(message.channel, "Available commands: " + out);
-    } else if (words[0].match(/!{1,2}([A-z])\w/g) !== null && permissions.hasPermission("sendMessages")) {
+    } else if (words[0].match(/!{1,2}\w+/g) !== null && permissions.hasPermission("sendMessages")) {
         console.log("event: registered call to " + words[0] + " command");
         handler(words[0], message);
     }
