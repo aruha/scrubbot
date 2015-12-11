@@ -1,16 +1,18 @@
 {
-  "name"         : "scrubbot",
-  "version"      : "0.0.0",
-  "description"  : "Bot for Scrubs",
-  "main"         : "js/listener.js",
-  "author"       : "aruha",
-  "contributors" : ["aruha", "allenbui94"],
-  "dependencies" : {
-    "discord.js" : "~5.1.0"
+  "name": "scrubbot",
+  "version": "0.0.0",
+  "description": "Bot for Scrubs",
+  "author": "aruha",
+  "contributors": [
+    "aruha",
+    "allenbui94"
+  ],
+  "dependencies": {
+    "discord.js": "^5.1.0"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/aruha/scrubbot.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aruha/scrubbot.git"
   },
-  "license" : "MIT"
+  "license": "MIT"
 }

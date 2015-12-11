@@ -32,7 +32,6 @@ poorSyntax = function(command, message) {
 
 handler = function(command, message) {
     var commandEntry = null;
-    
     for (var i = 0; i < cList.length; i++) {
         if (cList[i].cmd === command) {
             commandEntry = cList[i];
@@ -56,11 +55,9 @@ bot.on("message", function(message){
 
     var words = message.content.split(" ");
     var permissions = message.channel.permissionsOf(bot.user);
-    
     if (sendSync) {
         handler(sendSync.cmd, sendSync.msg);
     }
-    
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
         var out = "";
