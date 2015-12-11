@@ -7,7 +7,7 @@
   "contributors" : ["aruha", "allenbui94"],
   "dependencies" : {
     "discord.js" : "~5.1.0"
-  }
+  },
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/aruha/scrubbot.git"
