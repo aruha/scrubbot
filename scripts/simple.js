@@ -1,47 +1,18 @@
 ﻿//all fns should be "simple" -> create entries in responseList for all commands using the command name as the key
 
 const fileName = __filename.slice(__dirname.length + 1)
-var commands = [{
-    cmd: "!nobunobu",
-    fn: "synchsend",
-    file: fileName
-}, {
-    cmd: "!random",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!okita",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!dongers",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!lenny",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!navyseals",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!hagay",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!sadface",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!ayylmao",
-    fn: "simple",
-    file: fileName
-}, {
-    cmd: "!getout",
-    fn: "getout",
-    file: fileName
-}];
+var commands = [
+    { cmd: "!nobunobu", fn: "synchsend", file: fileName }, 
+    { cmd: "!random",fn: "simple", file: fileName }, 
+    { cmd: "!okita", fn: "simple", file: fileName }, 
+    { cmd: "!dongers", fn: "simple", file: fileName }, 
+    { cmd: "!lenny", fn: "simple", file: fileName },  
+    { cmd: "!navyseals", fn: "simple", file: fileName }, 
+    { cmd: "!hagay", fn: "simple", file: fileName },
+    { cmd: "!sadface", fn: "simple", file: fileName }, 
+    { cmd: "!ayylmao", fn: "simple", file: fileName }, 
+    { cmd: "!getout", fn: "getout", file: fileName }
+];
 
 var responseList = [],
     sequentialList = [];
