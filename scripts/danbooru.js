@@ -1,15 +1,20 @@
 var http = require("http");
 
 const fileName = __filename.slice(__dirname.length + 1)
-var commands = [
-    { cmd: "!danbooru", fn: "dbget", file: fileName }
-];
+var commands = [{
+    cmd: "!danbooru",
+    fn: "dbget",
+    file: fileName
+}];
 
 module.exports = function(bot, sendSync) {
     return {
         commands: commands,
-        dbget: function (message) {
-            var words = message.content.split(" "), body = "", searchstring = "http://danbooru.donmai.us/posts.json?tags=", parsed;
+        dbget: function(message) {
+            var words = message.content.split(" "),
+                body = "",
+                searchstring = "http://danbooru.donmai.us/posts.json?tags=",
+                parsed;
             if (words.length === 2 && words[1] === "?") {
                 bot.sendMessage(message.channel, "Description: Returns a random image from a Danbooru search.\nSyntax: !danbooru [tag1] _[tag2]_");
                 return;
