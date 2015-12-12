@@ -3,7 +3,7 @@ var commands = [
     { cmd: "!!inspect", fn: "inspect", file: fileName }
 ];
 
-module.exports = function(bot, sendSync) {
+module.exports = function (bot, sendSync) {
     return {
         commands: commands,
         inspect: function (message) {
@@ -12,7 +12,8 @@ module.exports = function(bot, sendSync) {
             words.splice(0, 1);
             words = words.join(" ");
             var user = message.channel.server.members.get("username", words)
-        inspect: function(message) {
+        },
+        inspect: function (message) {
             var words = message.content.split(" "),
             user = message.channel.server.members.get("username", words[1]);
             bot.sendMessage(message.author, "Name: " + user.username + "\nID: " + user.id);

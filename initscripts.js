@@ -8,7 +8,7 @@ module.exports = function(bot, sendSync) {
             var files = fs.readdirSync("./scripts");
             for (var i = 0; i < files.length; i++) {
                 if (files[i].match(/(\.js)$/g) !== null) {
-                    list[files[i]] = require("../scripts/" + files[i])(bot, sendSync);
+                    list[files[i]] = require("./scripts/" + files[i])(bot, sendSync);
                     console.log("initscripts.js->init: registered " + files[i]);
                 }
             }

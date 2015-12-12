@@ -9,7 +9,7 @@ session = function(n_msg, n_cmd) {
 
 var sendSync = undefined;
 
-var config = require("../json/config.json");
+var config = require("./config.json");
 var scripts = require("./initscripts.js")(bot, sendSync);
 
 checkPermissions = function(message) {
