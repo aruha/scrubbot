@@ -1,8 +1,5 @@
 # Scrubs Bot
-A bot being developed on top of nodeJS and discord.js for our community server on Discord. Being developed by:
-
-* [aruha](https://github.com/aruha) - Main developer
-* [allenbui94](https://github.com/allenbui94) - Just the assistant
+A bot being developed on top of nodeJS and discord.js for our community server on Discord.
 
 Feel free to help contribute by submitting issues or making pull requests, whatever's cool with you.
 
