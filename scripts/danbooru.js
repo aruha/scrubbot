@@ -24,7 +24,6 @@ module.exports = function(bot, sendSync) {
                 poorSyntax("!danbooru", message);
                 return;
             }
-            console.log(words[1].match(/([\w:\(\)])+/g));
             var response = http.get(searchstring, function(res) {
                 var body = "";
                 res.on('data', function(d) {
@@ -37,8 +36,12 @@ module.exports = function(bot, sendSync) {
                         return;
                     }
                     var picked = Math.floor(Math.random() * parsed.length);
-                    while (parsed[picked].rating === "e") {
+                    for (var i = 0; parsed[picked].rating === "e" && i < 100; i++) {
                         picked = Math.floor(Math.random() * parsed.length);
+                    }
+                    if (i === 100) {
+                        bot.sendMessage(message.channel, "No unblacklisted results found.");
+                        return;
                     }
                     bot.sendMessage(message.channel, "http://donmai.us/posts/" + parsed[picked].id);
                     return;
