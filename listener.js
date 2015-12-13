@@ -32,6 +32,18 @@ function handler(command, message) {
         bot.sendMessage(message.channel, "Invalid command. Use ``!help`` for a list of available commands.");
         return;
     }
+    
+    var cooldown = config.userCDInSeconds;
+    if (bot.admins[message.author.id]) cooldown = config.adminCDInSeconds;
+    if (!sendSync) {
+        if (Date.now() < bot.cooldowns[message.author.id] + cooldown * 1000) {
+            console.log("...but their cooldown was still active");
+            bot.reply(message, "your cooldown is still active for " + ((bot.cooldowns[message.author.id] + cooldown * 1000 - Date.now()) / 1000) + " seconds");
+            return;
+        }
+        bot.cooldowns[message.author.id] = Date.now();
+    }
+    
     if (cList[command].cmd.slice(0, 2) === "!!" && !checkPermissions(message)) return;
     sendSync = atlas[cList[command].file][cList[command].fn](message);
 }
@@ -60,14 +72,6 @@ bot.on("message", function(message) {
         bot.sendMessage(message.channel, "Available commands: " + out);
     } else if (words[0].match(/^!{1,2}\w+/g) !== null && permissions.hasPermission("sendMessages")) {
         console.log("event: registered call to " + words[0] + " command by " + message.author.username);
-        var cooldown = config.userCDInSeconds;
-        if (bot.admins[message.author.id]) cooldown = config.adminCDInSeconds;
-        if (Date.now() < bot.cooldowns[message.author.id] + cooldown * 1000) {
-            console.log("...but their cooldown was still active");
-            bot.reply(message, "your cooldown is still active for " + ((bot.cooldowns[message.author.id] + cooldown * 1000 - Date.now())/ 1000) + " seconds");
-            return;
-        }
-        bot.cooldowns[message.author.id] = Date.now();
         handler(words[0], message);
     }
 });
