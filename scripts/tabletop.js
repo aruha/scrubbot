@@ -12,7 +12,7 @@ module.exports = function(bot, sendSync) {
             if (words.length === 2 && words[1] === "?") {
                 bot.sendMessage(message.channel, "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice ``num of dice``d``max dice value``+``bonus``");
                 return;
-            } else if (words.length > 2) {
+            } else if (words.length !== 2) {
                 poorSyntax("!dice", message);
                 return;
             }
