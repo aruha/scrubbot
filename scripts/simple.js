@@ -1,4 +1,5 @@
-﻿//all fns should be "simple" -> create entries in responseList for all commands using the command name as the key
+﻿//This script automatically loads random single-message (responseList) commands, and multiple-message (sequentialList)
+//from ./storage/simple.js/commands.json -- to add more commands, simply edit that file using the proper format.
 
 const fileName = __filename.slice(__dirname.length + 1)
 const storagePath = "./storage/" + fileName + "/";
@@ -6,23 +7,32 @@ const storagePath = "./storage/" + fileName + "/";
 var commandJson = require(storagePath + "commands.json"),
     responseList = commandJson.responseList,
     sequentialList = commandJson.sequentialList;
-
+    
 var commands = [
-    { cmd: "!nobu", fn: "synchsend", file: fileName }, 
-    { cmd: "!okita", fn: "simple", file: fileName }, 
-    { cmd: "!dongers", fn: "simple", file: fileName }, 
-    { cmd: "!lenny", fn: "simple", file: fileName },  
-    { cmd: "!navyseals", fn: "simple", file: fileName }, 
-    { cmd: "!hagay", fn: "simple", file: fileName },
-    { cmd: "!sadface", fn: "simple", file: fileName }, 
-    { cmd: "!ayylmao", fn: "simple", file: fileName }, 
-    { cmd: "!getout", fn: "getout", file: fileName },
-    { cmd: "!scathach", fn: "synchsend", file: fileName}
+    { cmd: "!getout", fn: "getout", file: fileName }
 ];
+
+initSimple = function(cmdList) {
+    for (key_name in responseList) {
+        var newCmd = {};
+        newCmd.cmd = key_name;
+        newCmd.fn = "simple";
+        newCmd.file = fileName;
+        cmdList[commands.length] = newCmd;
+    }
+    for (key_name in sequentialList) {
+        var newCmd = {};
+        newCmd.cmd = key_name;
+        newCmd.fn = "synchsend";
+        newCmd.file = fileName;
+        cmdList[commands.length] = newCmd;
+    }
+    return cmdList;
+}
 
 module.exports = function(bot, sendSync) {
     return {
-        commands: commands,
+        commands: initSimple(commands),
         simple: function(message) {
             var words = message.content.split(" "),
                 picked = Math.floor(Math.random() * responseList[words[0]].length);
@@ -31,7 +41,7 @@ module.exports = function(bot, sendSync) {
         },
         synchsend: function(message) {
             var words = message.content.split(" ");
-            if (!sendSync) {
+            if (!sendSync || (sendSync && sendSync.cmd !== words[0])) {
                 sendSync = new session(message, words[0]);
                 console.log(words[0] + ": opening sync thread");
                 bot.sendMessage(message.channel, sequentialList[words[0]][++sendSync.seqn]);
@@ -48,12 +58,9 @@ module.exports = function(bot, sendSync) {
         },
         getout: function(message) {
             var words = message.content.split(" ");
-            if (words.length != 2) {
-                poorSyntax("!getout", message);
-                return;
-            } else {
-                bot.sendMessage(message.channel, words[1] + " get out");
-            }
+            words.splice(0, 1);
+            words = words.join(" ");
+            bot.sendMessage(message.channel, words + ", get out");
         }
     };
 }
