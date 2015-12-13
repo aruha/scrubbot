@@ -1,8 +1,7 @@
 ﻿//all fns should be "simple" -> create entries in responseList for all commands using the command name as the key
 
 const fileName = __filename.slice(__dirname.length + 1)
-const storagePath = __dirname + "\\storage\\" + fileName + "\\"; //windows specific
-//const storagePath = __dirname + "/storage/" + fileName + "/"; //use if on linux as a temporary workaround
+const storagePath = "./storage/" + fileName + "/";
 
 var commandJson = require(storagePath + "commands.json"),
     responseList = commandJson.responseList,
@@ -10,7 +9,6 @@ var commandJson = require(storagePath + "commands.json"),
 
 var commands = [
     { cmd: "!nobu", fn: "synchsend", file: fileName }, 
-    { cmd: "!random",fn: "simple", file: fileName }, 
     { cmd: "!okita", fn: "simple", file: fileName }, 
     { cmd: "!dongers", fn: "simple", file: fileName }, 
     { cmd: "!lenny", fn: "simple", file: fileName },  
@@ -18,14 +16,14 @@ var commands = [
     { cmd: "!hagay", fn: "simple", file: fileName },
     { cmd: "!sadface", fn: "simple", file: fileName }, 
     { cmd: "!ayylmao", fn: "simple", file: fileName }, 
-    { cmd: "!getout", fn: "getout", file: fileName }
+    { cmd: "!getout", fn: "getout", file: fileName },
+    { cmd: "!scathach", fn: "synchsend", file: fileName}
 ];
 
 module.exports = function(bot, sendSync) {
     return {
         commands: commands,
         simple: function(message) {
-            console.log(commandJson);
             var words = message.content.split(" "),
                 picked = Math.floor(Math.random() * responseList[words[0]].length);
             bot.sendMessage(message.channel, responseList[words[0]][picked])

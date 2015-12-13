@@ -2,6 +2,7 @@ var request = require("superagent");
 var fs = require("fs");
 
 const fileName = __filename.slice(__dirname.length + 1)
+const storagePath = "./storage/" + fileName + "/";
 var commands = [
     { cmd: "!!vjoin", fn: "vjoin", file: fileName },
     { cmd: "!!vleave", fn: "vleave", file: fileName },
@@ -40,18 +41,23 @@ module.exports = function(bot, sendSync) {
             }
         },
         vplay: function (message) {
-            
+            var instream = fs.createReadStream("audio.mp4")
+            bot.internal.voiceConnection.playRawStream(instream, function(error) {
+                if (error != null) {
+                    console.log(error);
+                    process.exit(0);
+                }
+            });
         },
         urlplay: function (message) {
             var words = message.content.split(" ");
             words.splice(0, 1);
             words = words.join(" ");
             if (bot.internal.voiceConnection) {
-                var connection = bot.internal.voiceConnection;
-                    req = require("request");
+                var connection = bot.internal.voiceConnection,
+                    req = require("request"),
                     stream = req(words);
                 connection.playRawStream(stream);
-                console.log("playing" + stream); //likely breaking
             }
         },
         ytplay: function (message) {
@@ -59,11 +65,12 @@ module.exports = function(bot, sendSync) {
             words.splice(0, 1);
             words = words.join(" ");
             if (bot.internal.voiceConnection) {
+                bot.internal.voiceConnection.stopPlaying();
                 var ytdl = require("ytdl-core");
                 console.log("start");
-                ytdl(words, { filter: "audioonly" }).pipe(fs.createWriteStream("audio.mp3")).on("finish", function() {
+                ytdl(words, { format: "mp4", quality: "lowest" }).pipe(fs.createWriteStream("audio.mp4")).on("finish", function() { //ha, not likely
                     console.log("fin");
-                    bot.internal.voiceConnection.playFile("../audio.mp3");
+                    bot.internal.voiceConnection.playFile("audio.wav");
                 });
             }
         }
