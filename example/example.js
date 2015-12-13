@@ -1,17 +1,19 @@
 /*
     An example script file.
-    The information held under commands will be used to refer to
-    the functions within this file, so its accuracy is crucial.
-    The format is given below.
-    cmd: the string to match to the message's first word
-    fn: the function to run once someone issues the command
-    file: the filename. should always be fn
+    
+    commands will typically be an empty array, but if the script
+    loads its commands from a file into the commands array, you
+    can specify $$$OVERRIDE in commands.json to load from the
+    local commands instead of those specified in commands.json
 */
-const fileName = __filename.slice(__dirname.length + 1)
-var commands = [
-    { cmd: "!ping", fn: "ping", file: fileName }
-];
+var fileName = __filename.slice(__dirname.length + 1)
+var commands = [];
 
+/*
+    Returning commands: commands is necessary. Otherwise, simply
+    fill in functions as desired, and create the corresponding
+    entries in commands.json.
+*/
 module.exports = function(bot, sendSync) {
     return {
         commands: commands,

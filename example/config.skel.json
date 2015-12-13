@@ -5,5 +5,7 @@
     },
     "admins": [
         "an admin's id"
-    ]
+    ],
+    "userCDInSeconds": 1,
+    "adminCDInSeconds": 1
 }
