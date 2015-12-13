@@ -29,7 +29,6 @@ function poorSyntax(command, message) {
 function handler(command, message) {
     if (!cList[command]) {
         console.log("error: invalid command " + command);
-        console.log(cList);
         bot.sendMessage(message.channel, "Invalid command. Use ``!help`` for a list of available commands.");
         return;
     }
@@ -48,7 +47,7 @@ bot.on("message", function(message) {
     var permissions = message.channel.permissionsOf(bot.user);
     if (sendSync) {
         handler(sendSync.cmd, sendSync.msg);
-    } else if (message.author == bot.user) return;
+    } else if (message.author === bot.user) return;
     
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
