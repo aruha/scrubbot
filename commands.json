@@ -1,16 +1,21 @@
 {
     "danbooru.js": {
-        "!danbooru": "danbooru"
+        "!danbooru": "dbget"
     },
     "inspector.js": {
-        
+        "!!inspect": "inspect"
     },
     "voice.js": {
-        
+        "!!vjoin": "vjoin",
+        "!!vleave": "vleave",
+        "!!vstop": "vstop",
+        "!!vplay": "vplay",
+        "!!urlplay": "urlplay",
+        "!!ytplay": "ytplay"
     },
     "simple.js": {
-        "!okita": "simple",
-        "!nobu": "synchsend"
+        "!getout": "getout",
+        "$$$OVERRIDE": "1"
     },
     "tabletop.js": {
         "!dice": "dice"

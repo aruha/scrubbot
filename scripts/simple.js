@@ -4,15 +4,13 @@
 var fileName = __filename.slice(__dirname.length + 1)
 var storagePath = "./storage/" + fileName + "/";
 
-var commandJson = require(storagePath + "commands.json"),
+var commandJson = require(storagePath + "responses.json"),
     responseList = commandJson.responseList,
     sequentialList = commandJson.sequentialList;
-    
-var commands = [
-    { cmd: "!getout", fn: "getout", file: fileName }
-];
 
-initSimple = function(cmdList) {
+var commands = [];
+
+function initSimple(cmdList) {
     for (key_name in responseList) {
         var newCmd = {};
         newCmd.cmd = key_name;

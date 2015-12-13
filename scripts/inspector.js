@@ -1,13 +1,10 @@
 var fileName = __filename.slice(__dirname.length + 1)
-var commands = [
-    { cmd: "!!inspect", fn: "inspect", file: fileName }
-];
+var commands = [];
 
 module.exports = function (bot, sendSync) {
     return {
         commands: commands,
         inspect: function (message) {
-            //extract username
             var words = message.content.split(" ");
             words.splice(0, 1);
             words = words.join(" ");

@@ -1,9 +1,7 @@
 var http = require("http");
 
-const fileName = __filename.slice(__dirname.length + 1)
-var commands = [
-    { cmd: "!danbooru", fn: "dbget", file: fileName }
-];
+var fileName = __filename.slice(__dirname.length + 1)
+var commands = [];
 
 module.exports = function(bot, sendSync) {
     return {

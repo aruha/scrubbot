@@ -3,14 +3,7 @@ var fs = require("fs");
 
 var fileName = __filename.slice(__dirname.length + 1)
 var storagePath = "./storage/" + fileName + "/";
-var commands = [
-    { cmd: "!!vjoin", fn: "vjoin", file: fileName },
-    { cmd: "!!vleave", fn: "vleave", file: fileName },
-    { cmd: "!!vstop", fn: "vstop", file: fileName },
-    { cmd: "!!vplay", fn: "vplay", file: fileName },
-    { cmd: "!!urlplay", fn: "urlplay", file: fileName },
-    { cmd: "!!ytplay", fn: "ytplay", file: fileName }
-];
+var commands = [];
 
 module.exports = function(bot, sendSync) {
     return {

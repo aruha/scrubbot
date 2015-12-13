@@ -1,7 +1,5 @@
 var fileName = __filename.slice(__dirname.length + 1)
-var commands = [
-    { cmd: "!dice", fn: "dice", file: fileName }
-];
+var commands = [];
 
 module.exports = function(bot, sendSync) {
     return {

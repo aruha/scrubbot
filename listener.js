@@ -12,7 +12,7 @@ var sendSync = undefined;
 var config = require("./config.json");
 var scripts = require("./initscripts.js")(bot, sendSync);
 
-checkPermissions = function(message) {
+function checkPermissions(message) {
     if (bot.admins[message.author.id]) {
         return true;
     }
@@ -21,12 +21,12 @@ checkPermissions = function(message) {
     return false;
 }
 
-poorSyntax = function(command, message) {
+function poorSyntax(command, message) {
     console.log("error: invalid options given to " + command);
     bot.sendMessage(message.channel, "Invalid syntax. Use ``" + command + " ?`` for information.");
 }
 
-handler = function(command, message) {
+function handler(command, message) {
     if (!cList[command]) {
         console.log("error: invalid command " + command);
         console.log(cList);
