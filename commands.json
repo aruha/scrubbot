@@ -1,0 +1,18 @@
+{
+    "danbooru.js": {
+        "!danbooru": "danbooru"
+    },
+    "inspector.js": {
+        
+    },
+    "voice.js": {
+        
+    },
+    "simple.js": {
+        "!okita": "simple",
+        "!nobu": "synchsend"
+    },
+    "tabletop.js": {
+        "!dice": "dice"
+    }
+}

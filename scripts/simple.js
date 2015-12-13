@@ -1,8 +1,8 @@
 ﻿//This script automatically loads random single-message (responseList) commands, and multiple-message (sequentialList)
 //from ./storage/simple.js/commands.json -- to add more commands, simply edit that file using the proper format.
 
-const fileName = __filename.slice(__dirname.length + 1)
-const storagePath = "./storage/" + fileName + "/";
+var fileName = __filename.slice(__dirname.length + 1)
+var storagePath = "./storage/" + fileName + "/";
 
 var commandJson = require(storagePath + "commands.json"),
     responseList = commandJson.responseList,

@@ -1,8 +1,8 @@
 var request = require("superagent");
 var fs = require("fs");
 
-const fileName = __filename.slice(__dirname.length + 1)
-const storagePath = "./storage/" + fileName + "/";
+var fileName = __filename.slice(__dirname.length + 1)
+var storagePath = "./storage/" + fileName + "/";
 var commands = [
     { cmd: "!!vjoin", fn: "vjoin", file: fileName },
     { cmd: "!!vleave", fn: "vleave", file: fileName },

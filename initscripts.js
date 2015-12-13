@@ -1,4 +1,5 @@
 var fs = require("fs");
+var commandJson = require("./commands.json");
 
 module.exports = function(bot, sendSync) {
     return {
@@ -19,26 +20,31 @@ module.exports = function(bot, sendSync) {
             var cmdlist = {},
                 index = 0;
             console.log("initscripts.js->loadCList: initializing command list");
-            for (key_name in list) {
-                for (var j = 0; j < list[key_name].commands.length; j++) {
+            for (var key_name in list) {
+                //for (var j = 0; j < list[key_name].commands.length; j++) {
+                console.log(key_name);
+                console.log(commandJson[key_name]);
+                for (var obj of commandJson[key_name]) {
+                    console.log(obj);
                     /*for (var k = 0; k < cmdlist.length; k++) {
                         if (list[key_name].commands[j].cmd === cmdlist[k].cmd) {
                             console.log("fatal error: duplicate command detected (" + cmdlist[k].cmd + " in " + cmdlist[k].file + " and " + key_name + ")");
                             process.exit(-1);
                         }
                     }*/
-                    for (cmd_name in cmdlist) {
+                    /*for (cmd_name in cmdlist) {
                         if (list[key_name].commands[j].cmd == cmd_name) {
                             console.log("fatal error: duplicate command detected (" + cmd_name 
                                         + " in " + list[key_name].commands[j].file + " and " + cmdlist[cmd_name].file + ")");
                             process.exit(-1);
                         }
                     }
-                    cmdlist[list[key_name].commands[j].cmd] = list[key_name].commands[j];
+                    
+                    /*cmdlist[list[key_name].commands[j].cmd] = list[key_name].commands[j];
                     console.log("initscripts.js->loadCList: registered " 
                                 + list[key_name].commands[j].cmd + " to " 
                                 + list[key_name].commands[j].fn + " in " 
-                                + list[key_name].commands[j].file);
+                                + list[key_name].commands[j].file);*/
                 }
             }
             console.log("initscripts.js->loadCList: finished initializing command list with " + Object.keys(cmdlist).length + " command(s)");
