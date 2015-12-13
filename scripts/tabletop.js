@@ -1,6 +1,86 @@
 var fileName = __filename.slice(__dirname.length + 1)
 var commands = [];
 
+function getSkill(skill, playerSheet) {
+    skill = skill.toLowerCase();
+    switch (skill) {
+        case "speech":
+            
+            break;
+        case "barter":
+            
+            break;
+        case "performing":
+            
+            break;
+        case "lock-Picking":
+            
+            break;
+        case "archery":
+            
+            break;
+        case "one-handed":
+            
+            break;
+        case "bwo-handed":
+            
+            break;
+        case "block":
+            
+            break;
+        case "intimidate":
+            
+            break;
+        case "parry":
+            
+            break;
+        case "acrobatics":
+            
+            break;
+        case "stealth":
+            
+            break;
+        case "knowledge (survival)":
+        case "survival":
+            
+            break;
+        case "knowledge (medicine)":
+        case "medicine":
+            
+            break;
+        case "knowledge (scholarly)":
+        case "scholarly":
+            
+            break;
+        case "alchemy":
+            
+            break;
+        case "magic (healing)":
+        case "healing":
+            
+            break;
+        case "magic (offensive)":
+        case "offensive":
+            
+            break;
+        case "magic (defensive)":
+        case "defensive":
+            
+            break;
+        case "magic (summoning)":
+        case "summoning":
+            
+            break;
+        case "magic (illusions)":
+        case "illusions":
+            
+            break;
+        default:
+            //things
+            break;
+    }
+}
+
 module.exports = function(bot, sendSync) {
     return {
         commands: commands,
