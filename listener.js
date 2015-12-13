@@ -13,14 +13,10 @@ var config = require("./config.json");
 var scripts = require("./initscripts.js")(bot, sendSync);
 
 checkPermissions = function(message) {
-    var userID = message.author.id;
-    for (var i = 0; i < bot.admins.length; i++) {
-        if (bot.admins[i] == userID) {
-            console.log("ACK: permissions request CLEARED for id " + userID);
-            return true;
-        }
+    if (bot.admins[message.author.id]) {
+        return true;
     }
-    console.log("NAK: permissions request DENIED for id " + userID)
+    console.log("NAK: permissions request DENIED for id " + message.author.id)
     bot.sendMessage(message.channel, "Error: Insufficient permissions.");
     return false;
 }
@@ -31,20 +27,14 @@ poorSyntax = function(command, message) {
 }
 
 handler = function(command, message) {
-    var commandEntry = null;
-    for (var i = 0; i < cList.length; i++) {
-        if (cList[i].cmd === command) {
-            commandEntry = cList[i];
-            break;
-        }
-    }
-    if (commandEntry === null) {
+    if (!cList[command]) {
         console.log("error: invalid command " + command);
+        console.log(cList);
         bot.sendMessage(message.channel, "Invalid command. Use ``!help`` for a list of available commands.");
         return;
     }
-    if (commandEntry.cmd.slice(0, 2) === "!!" && !checkPermissions(message)) return;
-    sendSync = atlas[commandEntry.file][commandEntry.fn](message);
+    if (cList[command].cmd.slice(0, 2) === "!!" && !checkPermissions(message)) return;
+    sendSync = atlas[cList[command].file][cList[command].fn](message);
 }
 
 bot.on("message", function(message) {
@@ -58,28 +48,21 @@ bot.on("message", function(message) {
     var permissions = message.channel.permissionsOf(bot.user);
     if (sendSync) {
         handler(sendSync.cmd, sendSync.msg);
-    }
+    } else if (message.author == bot.user) return;
+    
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
         var out = "";
-        for (var i = 0; i < cList.length; i++) {
-            if (cList[i].cmd.slice(0, 2) !== "!!") {
-                out = out + "``" + cList[i].cmd + "`` ";
+        for (key_name in cList) {
+            if (key_name.slice(0, 2) !== "!!") {
+                out = out + "``" + key_name + "`` ";
             }
         }
         bot.sendMessage(message.channel, "Available commands: " + out);
     } else if (words[0].match(/^!{1,2}\w+/g) !== null && permissions.hasPermission("sendMessages")) {
         console.log("event: registered call to " + words[0] + " command by " + message.author.username);
         var cooldown = config.userCDInSeconds;
-        /*for (var i = 0; i < bot.admins.length; i++) {
-            if (bot.admins[i] == message.author.id) {
-                cooldown = config.adminCDInSeconds;
-                break;
-            }
-        }*/
-        if (bot.admins.indexOf(message.author.id) > -1) {
-            cooldown = config.adminCDInSeconds;
-        }
+        if (bot.admins[message.author.id]) cooldown = config.adminCDInSeconds;
         if (Date.now() < bot.cooldowns[message.author.id] + cooldown * 1000) {
             console.log("...but their cooldown was still active");
             bot.reply(message, "your cooldown is still active for " + ((bot.cooldowns[message.author.id] + cooldown * 1000 - Date.now())/ 1000) + " seconds");
