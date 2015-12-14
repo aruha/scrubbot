@@ -1,22 +1,21 @@
 var Discord = require("discord.js");
 var bot = new Discord.Client();
 
-session = function(n_msg, n_cmd) {
+var session = function(n_msg, n_cmd) {
     this.msg = n_msg;
     this.cmd = n_cmd;
     this.seqn = -1;
-}
+};
 
-var sendSync = undefined;
-
+//setting up environment
 var config = require("./config.json");
-var scripts = require("./initscripts.js")(bot, sendSync);
+var scripts = require("./scripts.js");
 
 function checkPermissions(message) {
     if (bot.admins[message.author.id]) {
         return true;
     }
-    console.log("NAK: permissions request DENIED for id " + message.author.id)
+    console.log("NAK: permissions request DENIED for id " + message.author.id);
     bot.sendMessage(message.channel, "Error: Insufficient permissions.");
     return false;
 }
@@ -48,6 +47,7 @@ function handler(command, message) {
     sendSync = atlas[cList[command].file][cList[command].fn](message);
 }
 
+//responses
 bot.on("message", function(message) {
     var words = message.content.split(" ");
     
@@ -64,7 +64,7 @@ bot.on("message", function(message) {
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
         var out = "";
-        for (key_name in cList) {
+        for (var key_name in cList) {
             if (key_name.slice(0, 2) !== "!!") {
                 out = out + "``" + key_name + "`` ";
             }
@@ -76,9 +76,13 @@ bot.on("message", function(message) {
     }
 });
 
-atlas = scripts.init(bot);
-bot.admins = scripts.loadAdmins(config);
-bot.cooldowns = {};
-cList = scripts.loadCList(atlas);
+// main
 
-bot.login(config.credentials.email, config.credentials.password);
+var atlas, sendSync, cList;
+
+atlas = scripts.init(bot, sendSync);
+bot.admins = config.admins;
+bot.cooldowns = {};
+// cList = scripts.loadCList(atlas);
+
+// bot.login(config.credentials.email, config.credentials.password);
