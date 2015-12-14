@@ -15,7 +15,7 @@ var bot, sendSync;
     fileName: the name of the file to load from
 */
 //this should probably be cleaned up a bit more -> revamp how the command arrays are structured?
-function loadFromFile(atlas, commandList, fileName) {
+function loadCommandsFromScript(atlas, commandList, fileName) {
     var commands = atlas[fileName].commands;
     this.commandList = commandList;
     for (var i = 0; i < commands.length; i++) {
@@ -83,7 +83,7 @@ module.exports.initCommands = function(atlas, commandList) {
         for (var cmdName in commandJson[fileName]) {
             if (cmdName === "$$$OVERRIDE") {
                 console.log("initscripts.js->initCommands: REDIRECTING LOAD TARGET to " + fileName);
-                loadFromFile(atlas, commandList, fileName);
+                loadCommandsFromScript(atlas, commandList, fileName);
                 break;
             }
             for (var previousEntry in commandList) {

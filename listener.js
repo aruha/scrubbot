@@ -11,6 +11,12 @@ var session = function(n_msg, n_cmd) {
 var config = require("./config.json");
 var scripts = require("./scripts.js");
 
+/*
+    Checks if the sender of a message is an admin. Only
+    called if the command begins with !!
+    
+    message: the message whose author is being checked
+*/
 function checkPermissions(message) {
     if (config.admins[message.author.id]) {
         return true;
@@ -20,11 +26,26 @@ function checkPermissions(message) {
     return false;
 }
 
-function poorSyntax(command, message) {
+/*
+    Displays a message indicating improper parameters
+    were given to a command.
+    
+    message: the message with improper parameters
+*/
+function poorSyntax(message) {
     console.log("error: invalid options given to " + command);
     bot.sendMessage(message.channel, "Invalid syntax. Use ``" + command + " ?`` for information.");
 }
 
+/*
+    Handles behavior for commands received, checking
+    permissions and sending the message to the appropriate
+    file and function if everything is valid.
+    
+    command: the command that triggered the event
+    
+    message: the full message of the command
+*/
 function handler(command, message) {
     if (!cList[command]) {
         console.log("error: invalid command " + command);
@@ -47,7 +68,9 @@ function handler(command, message) {
     bot.session = atlas[cList[command].file][cList[command].fn](message);
 }
 
-//responses
+/*
+    Listener for messages.
+*/
 bot.on("message", function(message) {
     var words = message.content.split(" ");
     
@@ -76,7 +99,9 @@ bot.on("message", function(message) {
     }
 });
 
-// main
+/*
+    Bot startup
+*/
 var atlas = {}, cList = {};
 bot.cooldowns = {};
 

@@ -19,7 +19,7 @@ module.exports = function(bot) {
             } else if (words.length === 3 && words[1].match(/([\w:\(\)])+/g) && words[2].match(/([\w:\(\)])+/g)) {
                 searchstring = searchstring + words[1] + " " + words[2];
             } else {
-                poorSyntax("!danbooru", message);
+                poorSyntax(message);
                 return;
             }
             var response = http.get(searchstring, function(res) {
