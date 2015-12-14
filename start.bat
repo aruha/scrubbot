@@ -1,3 +1,3 @@
 cd "%~dp0"
-node "listener.js"
+node listener.js
 pause
