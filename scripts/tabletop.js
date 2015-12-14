@@ -81,7 +81,7 @@ function getSkill(skill, playerSheet) {
     }
 }
 
-module.exports = function(bot, sendSync) {
+module.exports = function(bot) {
     return {
         commands: commands,
         dice: function(message) {

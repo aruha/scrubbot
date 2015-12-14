@@ -28,7 +28,7 @@ function initSimple(cmdList) {
     return cmdList;
 }
 
-module.exports = function(bot, sendSync) {
+module.exports = function(bot) {
     return {
         commands: initSimple(commands),
         simple: function(message) {
@@ -39,20 +39,20 @@ module.exports = function(bot, sendSync) {
         },
         synchsend: function(message) {
             var words = message.content.split(" ");
-            if (!sendSync || (sendSync && sendSync.cmd !== words[0])) {
-                sendSync = new session(message, words[0]);
+            if (!bot.session || (bot.session && bot.session.cmd !== words[0])) {
+                bot.session = new session(message, words[0]);
                 console.log(words[0] + ": opening sync thread");
-                bot.sendMessage(message.channel, sequentialList[words[0]][++sendSync.seqn]);
+                bot.sendMessage(message.channel, sequentialList[words[0]][++bot.session.seqn]);
             } else {
-                console.log(words[0] + ": stepping in sync thread (seqn: " + sendSync.seqn + " => " + (sendSync.seqn + 1) + ")");
-                if (sequentialList[words[0]][++sendSync.seqn] !== undefined) {
-                    bot.sendMessage(message.channel, sequentialList[words[0]][sendSync.seqn]);
+                console.log(words[0] + ": stepping in sync thread (seqn: " + bot.session.seqn + " => " + (bot.session.seqn + 1) + ")");
+                if (sequentialList[words[0]][++bot.session.seqn] !== undefined) {
+                    bot.sendMessage(message.channel, sequentialList[words[0]][bot.session.seqn]);
                 } else {
                     console.log(words[0] + ": ending sync thread");
-                    sendSync = undefined;
+                    bot.session = undefined;
                 }
             }
-            return sendSync;
+            return bot.session;
         },
         getout: function(message) {
             var words = message.content.split(" ");

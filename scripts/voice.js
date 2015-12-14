@@ -5,7 +5,7 @@ var fileName = __filename.slice(__dirname.length + 1)
 var storagePath = "./storage/" + fileName + "/";
 var commands = [];
 
-module.exports = function(bot, sendSync) {
+module.exports = function(bot) {
     return {
         commands: commands,
         vjoin: function (message) {

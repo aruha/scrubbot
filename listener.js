@@ -12,7 +12,7 @@ var config = require("./config.json");
 var scripts = require("./scripts.js");
 
 function checkPermissions(message) {
-    if (bot.admins[message.author.id]) {
+    if (config.admins[message.author.id]) {
         return true;
     }
     console.log("NAK: permissions request DENIED for id " + message.author.id);
@@ -33,8 +33,8 @@ function handler(command, message) {
     }
     
     var cooldown = config.userCDInSeconds;
-    if (bot.admins[message.author.id]) cooldown = config.adminCDInSeconds;
-    if (!sendSync) {
+    if (config.admins[message.author.id]) cooldown = config.adminCDInSeconds;
+    if (!bot.session) {
         if (Date.now() < bot.cooldowns[message.author.id] + cooldown * 1000) {
             console.log("...but their cooldown was still active");
             bot.reply(message, "your cooldown is still active for " + ((bot.cooldowns[message.author.id] + cooldown * 1000 - Date.now()) / 1000) + " seconds");
@@ -43,8 +43,8 @@ function handler(command, message) {
         bot.cooldowns[message.author.id] = Date.now();
     }
     
-    if (cList[command].cmd.slice(0, 2) === "!!" && !checkPermissions(message)) return;
-    sendSync = atlas[cList[command].file][cList[command].fn](message);
+    if (command.slice(0, 2) === "!!" && !checkPermissions(message)) return;
+    bot.session = atlas[cList[command].file][cList[command].fn](message);
 }
 
 //responses
@@ -57,8 +57,8 @@ bot.on("message", function(message) {
     }
 
     var permissions = message.channel.permissionsOf(bot.user);
-    if (sendSync) {
-        handler(sendSync.cmd, sendSync.msg);
+    if (bot.session) {
+        handler(bot.session.cmd, bot.session.msg);
     } else if (message.author === bot.user) return;
     
     if (words[0] === "!help") {
@@ -77,12 +77,10 @@ bot.on("message", function(message) {
 });
 
 // main
-
-var atlas, sendSync, cList;
-
-atlas = scripts.init(bot, sendSync);
-bot.admins = config.admins;
+var atlas = {}, cList = {};
 bot.cooldowns = {};
-// cList = scripts.loadCList(atlas);
 
-// bot.login(config.credentials.email, config.credentials.password);
+scripts.initAtlas(bot, atlas);
+scripts.initCommands(atlas, cList);
+
+bot.login(config.credentials.email, config.credentials.password);
