@@ -6,7 +6,7 @@
     can specify $$$OVERRIDE in commands.json to load from the
     local commands instead of those specified in commands.json
 */
-var fileName = __filename.slice(__dirname.length + 1)
+var fileName = __filename.slice(__dirname.length + 1);
 var commands = [];
 
 /*
@@ -22,4 +22,4 @@ module.exports = function(bot, sendSync) {
             return;
         }
     };
-}
+};
