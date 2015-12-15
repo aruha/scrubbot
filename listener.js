@@ -1,11 +1,12 @@
 var Discord = require("discord.js");
 var bot = new Discord.Client();
 
-var session = function(n_msg, n_cmd) {
+Session = function(n_msg, n_cmd) {
     this.msg = n_msg;
     this.cmd = n_cmd;
     this.seqn = -1;
 };
+
 
 //setting up environment
 var config = require("./config.json");
@@ -32,7 +33,7 @@ function checkPermissions(message) {
     
     message: the message with improper parameters
 */
-function poorSyntax(message) {
+function poorSyntax(command, message) {
     console.log("error: invalid options given to " + command);
     bot.sendMessage(message.channel, "Invalid syntax. Use ``" + command + " ?`` for information.");
 }
@@ -55,7 +56,7 @@ function handler(command, message) {
     
     var cooldown = config.userCDInSeconds;
     if (config.admins[message.author.id]) cooldown = config.adminCDInSeconds;
-    if (!bot.session) {
+    if (!bot.sendSync) {
         if (Date.now() < bot.cooldowns[message.author.id] + cooldown * 1000) {
             console.log("...but their cooldown was still active");
             bot.reply(message, "your cooldown is still active for " + ((bot.cooldowns[message.author.id] + cooldown * 1000 - Date.now()) / 1000) + " seconds");
@@ -65,7 +66,7 @@ function handler(command, message) {
     }
     
     if (command.slice(0, 2) === "!!" && !checkPermissions(message)) return;
-    bot.session = atlas[cList[command].file][cList[command].fn](message);
+    bot.sendSync = atlas[cList[command].file][cList[command].fn](message);
 }
 
 /*
@@ -80,8 +81,8 @@ bot.on("message", function(message) {
     }
 
     var permissions = message.channel.permissionsOf(bot.user);
-    if (bot.session) {
-        handler(bot.session.cmd, bot.session.msg);
+    if (bot.sendSync) {
+        handler(bot.sendSync.cmd, bot.sendSync.msg);
     } else if (message.author === bot.user) return;
     
     if (words[0] === "!help") {
@@ -104,6 +105,7 @@ bot.on("message", function(message) {
 */
 var atlas = {}, cList = {};
 bot.cooldowns = {};
+//bot.sendSync = {};
 
 scripts.initAtlas(bot, atlas);
 scripts.initCommands(atlas, cList);
