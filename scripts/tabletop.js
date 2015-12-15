@@ -1,4 +1,4 @@
-var fileName = __filename.slice(__dirname.length + 1)
+var fileName = __filename.slice(__dirname.length + 1);
 var commands = [];
 
 function getSkill(skill, playerSheet) {
@@ -95,8 +95,8 @@ module.exports = function(bot) {
                 return;
             }
             if (words[1].match(/[0-9]+d[0-9]+\+[0-9]+/g)) {
-                var numbers = [],
-                    total = 0;
+                var numbers = [];
+                total = 0;
                 for (var i = 0; i < 3; i++) {
                     numbers[i] = parseInt(words[1].match(/[0-9]+/g)[i]);
                 }

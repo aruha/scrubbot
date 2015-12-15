@@ -1,7 +1,7 @@
 var request = require("superagent");
 var fs = require("fs");
 
-var fileName = __filename.slice(__dirname.length + 1)
+var fileName = __filename.slice(__dirname.length + 1);
 var storagePath = "./storage/" + fileName + "/";
 var commands = [];
 
@@ -34,9 +34,9 @@ module.exports = function(bot) {
             }
         },
         vplay: function (message) {
-            var instream = fs.createReadStream("audio.mp4")
+            var instream = fs.createReadStream("audio.mp4");
             bot.internal.voiceConnection.playRawStream(instream, function(error) {
-                if (error != null) {
+                if (error !== null) {
                     console.log(error);
                     process.exit(0);
                 }

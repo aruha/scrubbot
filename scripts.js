@@ -26,7 +26,7 @@ function loadCommandsFromScript(atlas, commandList, fileName) {
             }
         }
         var newEntry = {};
-        newEntry.fn = commands[i].fn
+        newEntry.fn = commands[i].fn;
         newEntry.file = fileName;
         commandList[commands[i].cmd] = newEntry;
         console.log("initscripts.js->initCommands: registered " + commands[i].cmd + " to " + commands[i].fn + " in " + fileName);
@@ -69,8 +69,7 @@ module.exports.initAtlas = function (bot, atlas) {
     Initializes a command atlas of command<->function+file mappings,
     used to call specific functions in a given script.
     
-    atlas: the atlas of filename<->require mappings generated
-          above
+    atlas: the atlas of filename<->require mappings generated above
     
     commandList: the command atlas being initialized
 */
@@ -81,6 +80,7 @@ module.exports.initCommands = function(atlas, commandList) {
     console.log("initscripts.js->initCommands: initializing command atlas");
     for (var fileName in atlas) {
         for (var cmdName in commandJson[fileName]) {
+            //checking for override first
             if (cmdName === "$$$OVERRIDE") {
                 console.log("initscripts.js->initCommands: REDIRECTING LOAD TARGET to " + fileName);
                 loadCommandsFromScript(atlas, commandList, fileName);
@@ -100,4 +100,4 @@ module.exports.initCommands = function(atlas, commandList) {
             console.log("initscripts.js->initCommands: registered " + cmdName + " to " + commandJson[fileName][cmdName] + " in " + fileName);
         }
     }
-}
+};

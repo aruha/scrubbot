@@ -1,6 +1,6 @@
 var http = require("http");
 
-var fileName = __filename.slice(__dirname.length + 1)
+var fileName = __filename.slice(__dirname.length + 1);
 var commands = [];
 
 module.exports = function(bot) {
@@ -50,4 +50,4 @@ module.exports = function(bot) {
             });
         }
     };
-}
+};

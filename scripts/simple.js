@@ -1,7 +1,7 @@
 ﻿//This script automatically loads random single-message (responseList) commands, and multiple-message (sequentialList)
 //from ./storage/simple.js/commands.json -- to add more commands, simply edit that file using the proper format.
 
-var fileName = __filename.slice(__dirname.length + 1)
+var fileName = __filename.slice(__dirname.length + 1);
 var storagePath = "./storage/" + fileName + "/";
 
 var commandJson = require(storagePath + "responses.json"),
@@ -11,15 +11,16 @@ var commandJson = require(storagePath + "responses.json"),
 var commands = [];
 
 function initSimple(cmdList) {
-    for (key_name in responseList) {
-        var newCmd = {};
+    var newCmd;
+    for (var key_name in responseList) {
+        newCmd = {};
         newCmd.cmd = key_name;
         newCmd.fn = "simple";
         newCmd.file = fileName;
         cmdList[commands.length] = newCmd;
     }
-    for (key_name in sequentialList) {
-        var newCmd = {};
+    for (var key_name in sequentialList) {
+        newCmd = {};
         newCmd.cmd = key_name;
         newCmd.fn = "synchsend";
         newCmd.file = fileName;
@@ -34,7 +35,7 @@ module.exports = function(bot) {
         simple: function(message) {
             var words = message.content.split(" "),
                 picked = Math.floor(Math.random() * responseList[words[0]].length);
-            bot.sendMessage(message.channel, responseList[words[0]][picked])
+            bot.sendMessage(message.channel, responseList[words[0]][picked]);
             return;
         },
         synchsend: function(message) {
@@ -61,4 +62,4 @@ module.exports = function(bot) {
             bot.sendMessage(message.channel, words + ", get out");
         }
     };
-}
+};
