@@ -19,7 +19,7 @@ module.exports = function(bot) {
             } else if (words.length === 3 && words[1].match(/([\w:\(\)])+/g) && words[2].match(/([\w:\(\)])+/g)) {
                 searchstring = searchstring + words[1] + " " + words[2];
             } else {
-                poorSyntax(message);
+                poorSyntax("!danbooru", message);
                 return;
             }
             var response = http.get(searchstring, function(res) {
@@ -34,7 +34,7 @@ module.exports = function(bot) {
                         return;
                     }
                     var picked = Math.floor(Math.random() * parsed.length);
-                    for (var i = 0; parsed[picked].rating === "e" && i < 100; i++) {
+                    for (var i = 0; parsed[picked].rating !== "s" && i < 100; i++) {
                         picked = Math.floor(Math.random() * parsed.length);
                     }
                     if (i === 100) {

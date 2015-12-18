@@ -33,7 +33,7 @@ function checkPermissions(message) {
     
     message: the message with improper parameters
 */
-function poorSyntax(command, message) {
+poorSyntax = function(command, message) {
     console.log("error: invalid options given to " + command);
     bot.sendMessage(message.channel, "Invalid syntax. Use ``" + command + " ?`` for information.");
 }

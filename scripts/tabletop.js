@@ -91,7 +91,7 @@ module.exports = function(bot) {
                 bot.sendMessage(message.channel, "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice ``num of dice``d``max dice value``+``bonus``");
                 return;
             } else if (words.length !== 2) {
-                poorSyntax(message);
+                poorSyntax("!dice", message);
                 return;
             }
             if (words[1].match(/[0-9]+d[0-9]+\+[0-9]+/g)) {
