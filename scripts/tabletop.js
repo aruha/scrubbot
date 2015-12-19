@@ -28,6 +28,11 @@ var CharSheet = function() {
     this.cha = 1;
 };
 
+/*
+    Prints out the character sheet for the sender
+    
+    id: id of sender
+*/
 function printSheet(id) {
     if (!charSheets[id]) {
         console.log("no such sheet for id " + id);
@@ -40,7 +45,11 @@ function printSheet(id) {
     return outputString;
 }
 
+/*
+    Saves the current charSheets to a file
+*/
 function writeToSheet() {
+    // writes the current charSheets to ./scripts/storage/tabletop.js/charsheets.json for permanent storage
     fs.writeFile("./scripts/storage/" + fileName + "/charsheets.json", JSON.stringify(charSheets, null, 4), function (err) {
         if (err) {
             console.log(err);
@@ -50,10 +59,16 @@ function writeToSheet() {
     });
 }
 
+/*
+    Change the stats of an existing or new character sheet
+    
+    message: message that prompted the change
+*/
 function updateCharSheet(message) {
     var words = message.content.split(" "),
         newSheet;
     
+    // get the user's sheet if it exists, otherwise create a new one
     if (charSheets[message.author.id]) {
         newSheet = charSheets[message.author.id];
     } else {
@@ -62,16 +77,22 @@ function updateCharSheet(message) {
     
     words.splice(0, 1); // remove the command, leaving only arguments
     words = words.join(" ");
+    
+    // delete the sheet if the user chooses
     if (words === "DELETETHISSHEET") {
         return "TOBEDELETED";
     }
     
+    // split the stat changes, delimited by " & "
     words = words.split(" & ");
+    
+    //for every stat change the user passed
     for (var argument in words) {
+        // get the argument text
         argument = words[argument];
         
+        // check argument format to see if it matches one of the following operations
         var operation;
-        console.log(argument);
         if (argument.match(/^([A-z])+\=+([\-\w\ ])+/g) !== null) { // ex. str=30
             operation = "=";
         } else if (argument.match(/^([A-z])+\++([\-0-9])+/g) !== null) { // ex. str+30
@@ -79,35 +100,42 @@ function updateCharSheet(message) {
         } else if (argument.match(/^([A-z])+\-+([\-0-9])+/g) !== null) { // ex. str-30
             operation = "-";
         } else {
+            // otherwise, return with error
             console.log("no match found");
             return null;
         }
         
+        // check if the stat being changed exists
         var subArgs = argument.split(operation);
         if (typeof newSheet[subArgs[0]] === "undefined") {
+            // otherwise, return with error
             console.log("no stat found");
             return null;
         }
+        
+        // parse the change as a number, will be checked for success later
         var numericalChange = parseInt(subArgs[1]);
         
         switch (operation) {
             case "=":
+                // if both the change and the stat being changed are numbers
                 if (numericalChange !== null && typeof newSheet[subArgs[0]] === "number") {
                     newSheet[subArgs[0]] = numericalChange;
-                } else if (typeof newSheet[subArgs[0]] === typeof subArgs[1]) {
+                } else if (typeof newSheet[subArgs[0]] === typeof subArgs[1]) { // if not, check if the types match at all
                     newSheet[subArgs[0]] = subArgs[1];
-                } else {
+                } else { // otherwise, return with error
                     console.log("tried to change type for stat " + subArgs[0]);
                     return null;
                 }
                 break;
             case "-":
+                // you get the idea
                 if (isNaN(numericalChange)) return null;
-                newSheet[subArgs[0]] -= numericalChange;
+                newSheet[subArgs[0]] -= numericalChange; // adjust by numericalChange if it exists
                 break;
             case "+":
                 if (isNaN(numericalChange)) return null;
-                newSheet[subArgs[0]] += numericalChange;
+                newSheet[subArgs[0]] += numericalChange; // likewise
                 break;
             default:
                 return null;
@@ -117,6 +145,7 @@ function updateCharSheet(message) {
     return newSheet;
 }
 
+//unfinished
 function getSkill(skill, playerSheet) {
     skill = skill.toLowerCase();
     switch (skill) {
