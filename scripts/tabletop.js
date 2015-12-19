@@ -67,7 +67,9 @@ function updateCharSheet(message) {
     }
     
     words = words.split(" & ");
-    for (var argument of words) {
+    for (var argument in words) {
+        argument = words[argument];
+        
         var operation;
         console.log(argument);
         if (argument.match(/^([A-z])+\=+([\-\w\ ])+/g) !== null) { // ex. str=30
@@ -100,16 +102,15 @@ function updateCharSheet(message) {
                 }
                 break;
             case "-":
-                if (numericalChange === NaN) return null;
-                numericalChange = -1 * numericalChange;
-                //flows over to next case.
+                if (isNaN(numericalChange)) return null;
+                newSheet[subArgs[0]] -= numericalChange;
+                break;
             case "+":
-                if (numericalChange === NaN) return null;
+                if (isNaN(numericalChange)) return null;
                 newSheet[subArgs[0]] += numericalChange;
                 break;
             default:
                 return null;
-                break; // unnecessary
         }
     }
     
@@ -202,6 +203,7 @@ module.exports = function(bot) {
         dice: function(message) {
             var words = message.content.split(" "),
                 total = 0;
+            // check to see if the message word count is valid
             if (words.length === 2 && words[1] === "?") {
                 bot.sendMessage(message.channel, "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice ``num of dice``d``max dice value``+``bonus``");
                 return;
@@ -209,15 +211,24 @@ module.exports = function(bot) {
                 poorSyntax("!dice", message);
                 return;
             }
+            
+            // check to see if the dice parameter given is correctly formatted
+            // example of proper input is 1d20+5
             if (words[1].match(/[0-9]+d[0-9]+\+[0-9]+/g)) {
                 var numbers = [];
                 total = 0;
+                
+                // parse all of the 3 fields as number (0. number of dice, 1. max value, 2. bonus)
                 for (var i = 0; i < 3; i++) {
                     numbers[i] = parseInt(words[1].match(/[0-9]+/g)[i]);
                 }
+                
+                // roll numbers[0] dice
                 for (var j = 0; j < numbers[0]; j++) {
                     total += Math.ceil(Math.random() * numbers[1]);
                 }
+                
+                // add bonus, send final message
                 total += numbers[2];
                 bot.sendMessage(message.channel, "You rolled a " + Math.ceil(total));
             } else {

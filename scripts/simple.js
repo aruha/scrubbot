@@ -12,16 +12,16 @@ var commands = [];
 
 function initSimple(cmdList) {
     var newCmd;
-    for (var key_name in responseList) {
+    for (var resName in responseList) {
         newCmd = {};
-        newCmd.cmd = key_name;
+        newCmd.cmd = resName;
         newCmd.fn = "simple";
         newCmd.file = fileName;
         cmdList[commands.length] = newCmd;
     }
-    for (var key_name in sequentialList) {
+    for (var seqName in sequentialList) {
         newCmd = {};
-        newCmd.cmd = key_name;
+        newCmd.cmd = seqName;
         newCmd.fn = "synchsend";
         newCmd.file = fileName;
         cmdList[commands.length] = newCmd;
