@@ -5,6 +5,7 @@ var fileName = __filename.slice(__dirname.length + 1);
 var storagePath = "./storage/" + fileName + "/";
 
 var commandJson = require(storagePath + "responses.json"),
+    common = require("../lib/common.js"),
     responseList = commandJson.responseList,
     sequentialList = commandJson.sequentialList;
 
@@ -41,7 +42,7 @@ module.exports = function(bot) {
         synchsend: function(message) {
             var words = message.content.split(" ");
             if (!bot.sendSync || (bot.sendSync && bot.sendSync.cmd !== words[0])) {
-                bot.sendSync = new Session(message, words[0]);
+                bot.sendSync = new common.Session(message, words[0]);
                 console.log(words[0] + ": opening sync thread");
                 bot.sendMessage(message.channel, sequentialList[words[0]][++bot.sendSync.seqn]);
             } else {

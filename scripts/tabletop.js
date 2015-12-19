@@ -256,27 +256,6 @@ module.exports = function(bot) {
                 total += numbers[2]; //adding bonus
                 bot.sendMessage(message.channel, "You rolled a " + Math.ceil(total)); //passing result message to channel
             }
-            
-            // if (words[1].match(/[0-9]+d[0-9]+\+[0-9]+/g)) {
-            //     var numbers = [];
-            //     total = 0;
-                
-            //     // parse all of the 3 fields as number (0. number of dice, 1. max value, 2. bonus)
-            //     for (var i = 0; i < 3; i++) {
-            //         numbers[i] = parseInt(words[1].match(/[0-9]+/g)[i]);
-            //     }
-                
-            //     // roll numbers[0] dice
-            //     for (var j = 0; j < numbers[0]; j++) {
-            //         total += Math.ceil(Math.random() * numbers[1]);
-            //     }
-                
-            //     // add bonus, send final message
-            //     total += numbers[2];
-            //     bot.sendMessage(message.channel, "You rolled a " + Math.ceil(total));
-            // } else {
-            //     bot.sendMessage(message.channel, invalidMessage);
-            // }
             return;
         },
         changesheet: function(message) {
