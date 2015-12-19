@@ -3,7 +3,7 @@ var fileName = __filename.slice(__dirname.length + 1),
     charSheets = require("./storage/" + fileName + "/charsheets.json"),
     fs = require("fs");
 
-CharSheet = function() {
+var CharSheet = function() {
     //core
     this.name = "";
     this.lv = 1;
@@ -26,7 +26,7 @@ CharSheet = function() {
     this.int = 1;
     this.wis = 1;
     this.cha = 1;
-}
+};
 
 function printSheet(id) {
     if (!charSheets[id]) {

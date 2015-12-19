@@ -1,7 +1,7 @@
 var Discord = require("discord.js");
 var bot = new Discord.Client();
 
-Session = function(n_msg, n_cmd) {
+var Session = function(n_msg, n_cmd) {
     this.msg = n_msg;
     this.cmd = n_cmd;
     this.seqn = -1;
@@ -33,10 +33,10 @@ function checkPermissions(message) {
     
     message: the message with improper parameters
 */
-poorSyntax = function(command, message) {
+var poorSyntax = function(command, message) {
     console.log("error: invalid options given to " + command);
     bot.sendMessage(message.channel, "Invalid syntax. Use ``" + command + " ?`` for information.");
-}
+};
 
 /*
     Handles behavior for commands received, checking
