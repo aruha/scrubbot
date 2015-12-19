@@ -18,6 +18,8 @@
         "$$$OVERRIDE": "1"
     },
     "tabletop.js": {
-        "!dice": "dice"
+        "!dice": "dice",
+        "!sheet": "changesheet",
+        "!mysheet": "printsheet"
     }
 }
