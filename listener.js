@@ -18,6 +18,24 @@ bot.on("message", function(message) {
         console.log("received pm");
         return;
     }
+    
+    if (words[0] === "!!alias" && common.checkPermissions(message)) {
+        var tokens = message.content.split(/(\s\:\:)|(\:\:\s)/), // split the target by " ::" and ":: "
+            target = common.parseTarget(tokens[3], message); // extract the target from the message
+        
+        if (target === null) { // parseTarget found nothing
+            console.log("could not find target, aborting");
+            return;
+        }
+        console.log("id " + message.author.id + " aliasing as id " + target.id);
+        
+        message.author = target; // spoof sender
+        tokens.splice(0, 6); // remove all leading tokens
+        message.content = tokens.join(""); // rejoin
+        
+        // sync words to the spliced text
+        words = message.content.split(" ");
+    }
 
     var permissions = message.channel.permissionsOf(bot.user);
     if (bot.sendSync) {
@@ -33,9 +51,11 @@ bot.on("message", function(message) {
             }
         }
         bot.sendMessage(message.channel, "Available commands: " + out);
+        return;
     } else if (words[0].match(/^!{1,2}\w+/g) !== null && permissions.hasPermission("sendMessages")) {
         console.log("event: registered call to " + words[0] + " command by " + message.author.username);
         messageHandler.handle(words[0], message);
+        return;
     }
 });
 

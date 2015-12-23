@@ -20,6 +20,7 @@
     "tabletop.js": {
         "!dice": "dice",
         "!sheet": "changesheet",
-        "!mysheet": "printsheet"
+        "!mysheet": "printsheet",
+        "!myinv": "printinventory"
     }
 }
