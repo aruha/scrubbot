@@ -1,0 +1,38 @@
+{
+    "78625384274337792": {
+        "name": "hello",
+        "lv": 1,
+        "alignment": "Hello, world",
+        "race": "",
+        "gender": "",
+        "hair": "",
+        "eyes": "",
+        "age": "0",
+        "height": "0",
+        "weight": "0",
+        "str": 1,
+        "per": 1,
+        "dex": 1,
+        "con": 1,
+        "int": 1,
+        "wis": 50,
+        "cha": 1,
+        "inventory": {
+            "equipped": {
+                "weapon": 0,
+                "armor": null
+            },
+            "items": [
+                {
+                    "type": "ranged",
+                    "name": "Gun",
+                    "desc": "A gun",
+                    "dmg": 10,
+                    "rolls": 1,
+                    "accuracy": 5,
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

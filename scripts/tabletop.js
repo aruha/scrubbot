@@ -1,32 +1,101 @@
 var fileName = __filename.slice(__dirname.length + 1),
     commands = [],
     charSheets = require("./storage/" + fileName + "/charsheets.json"),
-    fs = require("fs");
+    fs = require("fs"),
+    common = require("../lib/common.js"),
+    items = require("./storage/" + fileName + "/itemclasses.js"),
+    dms = require("./storage/" + fileName + "/dms.json");
 
-var CharSheet = function() {
-    //core
-    this.name = "";
-    this.lv = 1;
+//unfinished
+function getSkill(skill, playerSheet) {
+    skill = skill.toLowerCase();
+    switch (skill) {
+        case "speech":
+            return 1 * playerSheet.cha;
+        case "atk":
+            var inv = playerSheet.inventory;
+            if (inv.items[inv.equipped.weapon]) {
+                return inv.items[inv.equipped.weapon].dmg;
+            }
+            return 0;
+        case "carryweight":
+            return 15 + 3 * playerSheet.str;
+        default:
+            return null;
+    }
+}
+
+/*
+    Adds an item to a player's inventory.
     
-    //details
-    this.alignment = "";
-    this.race = "";
-    this.gender = "";
-    this.hair = "";
-    this.eyes = "";
-    this.age = "0";
-    this.height = "0";
-    this.weight = "0";
+    id: id of target
+    item: the item object to add
+*/
+function addItem(id, item) {
+    if (!charSheets[id]) {
+        console.log("no such sheet with id " + id + " to add item");
+        return false;
+    }
     
-    //stats
-    this.str = 1;
-    this.per = 1;
-    this.dex = 1;
-    this.con = 1;
-    this.int = 1;
-    this.wis = 1;
-    this.cha = 1;
-};
+    var invItems = charSheets[id].inventory.items,
+        maxWeight = getSkill("carryweight", charSheets[id]),
+        invWeight = 0;
+    
+    for (var slot in invItems) {
+        invWeight += invItems[slot].weight;
+        if (invWeight > maxWeight) return false; // if the weight limit has been exceeded
+    }
+    invItems.push(item);
+    
+    charSheets[id].inventory.items = invItems; // save back
+    return true;
+}
+
+/*
+    Removes an item from the player's inventory.
+    id: id of target
+    slot: slot to remove item from
+*/
+function removeItem(id, slot) {
+    if (!charSheets[id]) {
+        console.log("no such sheet with id " + id + " to remove item");
+        return false;
+    }
+    
+    var inv = charSheets[id].inventory;
+    
+    for (var equippedItem in inv.equipped) {
+        if (inv.equipped[equippedItem] > slot) {
+            inv.equipped[equippedItem] -= 1;
+        }
+    }
+    
+    inv.items.splice(slot + 1, 1);
+    
+    charSheets[id].inventory = inv; // save back
+    return true;
+}
+
+/*
+    Prints out the inventory for the sender
+    
+    id: id of sender
+*/
+function printInventory(id) {
+    if (!charSheets[id]) {
+        console.log("no such sheet with id " + id + " to print inventory");
+        return null;
+    }
+    var outputString = "";
+    var invItems = charSheets[id].inventory.items;
+    for (var item in invItems) {
+        outputString = outputString + item + ":\n";
+        for (var stat in invItems[item]) {
+            outputString += "\t" + stat + ": " + invItems[item][stat] + "\n";
+        }
+    }
+    return outputString;
+}
 
 /*
     Prints out the character sheet for the sender
@@ -40,7 +109,9 @@ function printSheet(id) {
     }
     var outputString = "";
     for (var stat in charSheets[id]) {
-        outputString = outputString + stat + ": " + charSheets[id][stat] + "\n";
+        // inventory should always be at the end
+        if (stat === "inventory") break;
+        outputString += stat + ": " + charSheets[id][stat] + "\n";
     }
     return outputString;
 }
@@ -72,19 +143,21 @@ function updateCharSheet(message) {
     if (charSheets[message.author.id]) {
         newSheet = charSheets[message.author.id];
     } else {
-        newSheet = new CharSheet();
+        newSheet = new items.CharSheet();
     }
     
     words.splice(0, 1); // remove the command, leaving only arguments
     words = words.join(" ");
     
     // delete the sheet if the user chooses
-    if (words === "DELETETHISSHEET") {
-        return "TOBEDELETED";
+    if (words === "$$$DELETE") {
+        return undefined; //"TOBEDELETED";
+    } else if (words === "$$$NEW") {
+        return new items.CharSheet();
     }
     
     // split the stat changes, delimited by " & "
-    words = words.split(" & ");
+    words = words.split("; ");
     
     //for every stat change the user passed
     for (var argument in words) {
@@ -145,137 +218,135 @@ function updateCharSheet(message) {
     return newSheet;
 }
 
-//unfinished
-function getSkill(skill, playerSheet) {
-    skill = skill.toLowerCase();
-    switch (skill) {
-        case "speech":
-            
-            break;
-        case "barter":
-            
-            break;
-        case "performing":
-            
-            break;
-        case "lock-Picking":
-            
-            break;
-        case "archery":
-            
-            break;
-        case "one-handed":
-            
-            break;
-        case "bwo-handed":
-            
-            break;
-        case "block":
-            
-            break;
-        case "intimidate":
-            
-            break;
-        case "parry":
-            
-            break;
-        case "acrobatics":
-            
-            break;
-        case "stealth":
-            
-            break;
-        case "knowledge (survival)":
-        case "survival":
-            
-            break;
-        case "knowledge (medicine)":
-        case "medicine":
-            
-            break;
-        case "knowledge (scholarly)":
-        case "scholarly":
-            
-            break;
-        case "alchemy":
-            
-            break;
-        case "magic (healing)":
-        case "healing":
-            
-            break;
-        case "magic (offensive)":
-        case "offensive":
-            
-            break;
-        case "magic (defensive)":
-        case "defensive":
-            
-            break;
-        case "magic (summoning)":
-        case "summoning":
-            
-            break;
-        case "magic (illusions)":
-        case "illusions":
-            
-            break;
-        default:
-            //things
-            break;
+function rollDice(die, id) {
+    var total = 0;
+    // check to see if the dice parameter given is correctly formatted
+    // example of proper input is 1d20+5 or 1d20+melee
+    var pat = /([0-9]+)d([0-9]+)(\+|\-)([0-9]+|[a-z]+)/g;
+    var tokens = pat.exec(die); //tokenizing pattern on words
+    if (tokens === null) return null;
+    else {
+        var operation = String(tokens.slice(3,4)); //grab the third substring match, then convert to string
+        var numbers = tokens.slice(1,5); //slicing middle tokens out for numbers
+        numbers.splice(2,1); //and then remove the operation token
+        for (var i in numbers) {
+            if (!isNaN(parseInt(numbers[i]))) { //if it's parsable as a number
+                numbers[i] = parseInt(numbers[i]); //parsing to numbers
+            }
+        }
+        if (isNaN(numbers[2])) { // if a skill was passed as a bonus
+            if (isNaN(getSkill(numbers[2], charSheets[id]))) { // invalid bonus
+                return null;
+            } else {
+                numbers[2] = getSkill(numbers[2], charSheets[id]);
+            }
+        }
+        for (var j = 0; j < numbers[0]; j++) { //rolling dice number of times
+            var amountAdded = Math.ceil(Math.random() * numbers[1]);
+            if (operation === "-") {
+                amountAdded -= numbers[2];
+                if (amountAdded < 0) amountAdded = 0;
+            }
+            total += amountAdded;
+        }
+        if (operation === "+") total += numbers[2]; //adding bonus
     }
+    return Math.ceil(total);
 }
 
 module.exports = function(bot) {
     return {
         commands: commands,
         dice: function(message) {
-            var words = message.content.split(" "),
-                total = 0;
-            var descMessage = "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice ``num of dice``d``max dice value``+``bonus``";
-            var invalidMessage = "Invalid dice given. Input is formatted ``num of dice``d``max dice value``+``bonus``";
-            // check to see if the message word count is valid
+            var words = message.content.split(" ");
+            var descMessage = "Description: Rolls virtual dice and displays output in channel.\nSyntax: !dice ``num of dice``d``max dice value``+``bonus``\nor ``num of dice``d``max dice value``-``subtracted per roll``";
+            var invalidMessage = "Invalid dice given. Input is formatted ``num of dice``d``max dice value``+``bonus`` or ``num of dice``d``max dice value``-``subtracted per roll``";
+            var rolled = rollDice(words[1], message.author.id);
             if (words.length === 2 && words[1] === "?") {
                 bot.sendMessage(message.channel, descMessage);
                 return;
             } else if (words.length !== 2) {
-                poorSyntax("!dice", message);
+                bot.sendMessage(message.channel, common.poorSyntax("!dice"));
+                return;
+            } else if (isNaN(rolled)) {
+                bot.sendMessage(message.channel, invalidMessage); //send invalid if null
+                return;
+            } else {
+                bot.sendMessage(message.channel, "You rolled a " + rolled);
                 return;
             }
-            // check to see if the dice parameter given is correctly formatted
-            // example of proper input is 1d20+5
-            var pat = /([0-9]+)d([0-9]+)\+([0-9]+)/g;
-            var tokens = pat.exec(words[1]); //tokenizing pattern on words
-            if (tokens === null) bot.sendMessage(message.channel, invalidMessage); //send invalid if null
-            else {
-                var numbers = tokens.slice(1,4); //slicing middle tokens out for numbers
-                for (var i in numbers) numbers[i] = parseInt(numbers[i]); //parsing to numbers
-                for (var j = 0; j < numbers[0]; j++) { //rolling dice number of times
-                    total += Math.ceil(Math.random() * numbers[1]);
-                }
-                total += numbers[2]; //adding bonus
-                bot.sendMessage(message.channel, "You rolled a " + Math.ceil(total)); //passing result message to channel
-            }
-            return;
         },
         changesheet: function(message) {
+            var words = message.split(" ");
+            var descMessage = "Description: Changes the sheet of the sender.\nSyntax: ``!sheet`` followed by any number of key=value, seperated by ``\"; \"``" + 
+                              "\nExample: !sheet name=Hello, world!; alignment=Chaotic Good; str=5; int=7;";
+            if (words.length < 2) {
+                bot.sendMessage(message.channel, common.poorSyntax("!sheet"));
+                return;
+            } else if (words.length === 2 && words[1] === "?") {
+                bot.sendMessage(message.channel, descMessage);
+                return;
+            }
+            
             var newSheet = updateCharSheet(message);
             if (newSheet === null) {
-                poorSyntax("!sheet", message);
+                bot.sendMessage(message.channel, common.poorSyntax("!sheet"));
                 return;
-            } else if (newSheet === "TOBEDELETED") {
-                charSheets[message.author.id] = undefined;
             } else {
                 charSheets[message.author.id] = newSheet;
             }
-            //dangerous -- remove below after functions finished
-            writeToSheet();
+            return;
+        },
+        changesheetof: function(message) {
+            var words = message.split(" ");
+            var descMessage = "Description: Changes the sheet of the target.\nSyntax: ``!sheet ::target::`` followed by any number of key=value, seperated by ``\"; \"``" + 
+                              "\nExample: !sheet ::Foobar:: name=Hello, world!; alignment=Chaotic Good; str=5; int=7;";
+            if (words.length < 2) {
+                bot.sendMessage(message.channel, common.poorSyntax("!sheetof"));
+                return;
+            } else if (words.length === 2 && words[1] === "?") {
+                bot.sendMessage(message.channel, descMessage);
+                return;
+            }
+            if (dms[message.author.id]) {
+                var tokens = message.content.split(" :: ");
+                message.author = common.parseTarget(tokens[1]);
+                tokens.splice(1, 1);
+                message.content = tokens.join("");
+                
+                var newSheet = updateCharSheet(message);
+                if (newSheet === null) {
+                    bot.sendMessage(message.channel, common.poorSyntax("!sheet"));
+                    return;
+                } else {
+                    charSheets[message.author.id] = newSheet;
+                }
+            }
+            return;
+        },
+        writesheets: function(message) {
+            if (dms[message.author.id]) {
+                writeToSheet();
+                bot.sendMessage(message.channel, "_Writing contents of charSheets to permanent storage._");
+            } else {
+                bot.sendMessage(message.channel, "_Error: Only DMs can save the current character sheets._");
+            }
             return;
         },
         printsheet: function(message) {
             var outputString = printSheet(message.author.id);
             if (!outputString) {
-                poorSyntax("!mysheet", message);
+                bot.sendMessage(message.channel, common.poorSyntax("!mysheet"));
+                return;
+            } else {
+                bot.sendMessage(message.channel, outputString);
+            }
+            return;
+        },
+        printinventory: function(message) {
+            var outputString = printInventory(message.author.id);
+            if (!outputString) {
+                bot.sendMessage(message.channel, common.poorSyntax("!myinv"));
                 return;
             } else {
                 bot.sendMessage(message.channel, outputString);
