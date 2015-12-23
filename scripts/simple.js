@@ -7,7 +7,8 @@ var storagePath = "./storage/" + fileName + "/";
 var commandJson = require(storagePath + "responses.json"),
     common = require("../lib/common.js"),
     responseList = commandJson.responseList,
-    sequentialList = commandJson.sequentialList;
+    sequentialList = commandJson.sequentialList,
+    common = require("../lib/common.js");
 
 var commands = [];
 

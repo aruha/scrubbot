@@ -1,5 +1,6 @@
 var fileName = __filename.slice(__dirname.length + 1);
 var commands = [];
+var common = require("../lib/common.js");
 
 module.exports = function (bot) {
     return {
