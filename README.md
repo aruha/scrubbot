@@ -12,7 +12,8 @@ If you wish to run this bot on an account:
 1. Clone this repository.
 2. Navigate to it and then run `npm install`.
 3. Copy `./example/config.skel.json` to `./config.json` and fill in the credentials
-4. Run `node js\listener.js`.
+4. Copy `./example/useraliases.skel.json` to `./useraliases.json` and fill in, if desired
+5. Run `node js/listener.js`.
 
 ## License
 [MIT](LICENSE)
