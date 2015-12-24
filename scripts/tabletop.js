@@ -6,18 +6,41 @@ var fileName = __filename.slice(__dirname.length + 1),
     items = require("./storage/" + fileName + "/itemclasses.js"),
     dms = require("./storage/" + fileName + "/dms.json");
 
-//unfinished
 function getSkill(skill, playerSheet) {
     skill = skill.toLowerCase();
     switch (skill) {
         case "speech":
-            return 1 * playerSheet.cha;
+            return Math.floor(1 * playerSheet.cha);
+        case "intimidation":
+            return Math.floor(0.8 * playerSheet.str + 0.2 * playerSheet.cha);
+        case "entertaining":
+            return Math.floor(0.5 * playerSheet.cha + 0.5 * playerSheet.dex);
+        case "infiltration":
+            return Math.floor(0.3 * playerSheet.int + 0.3 * playerSheet.dex + 0.4 * playerSheet.per);
+        case "stealth":
+            return Math.floor(0.6 * playerSheet.dex + 0.4 * playerSheet.per);
+        case "marksmanship":
+            return Math.floor(0.7 * playerSheet.per + 0.3 * playerSheet.dex);
+        case "melee":
+            return Math.floor(0.8 * playerSheet.str + 0.2 * playerSheet.end);
+        case "survival":
+            return Math.floor(0.5 * playerSheet.end + 0.5 * playerSheet.int);
+        case "medicine":
+            return Math.floor(0.8 * playerSheet.int + 0.2 * playerSheet.dex);
+        case "research":
+            return Math.floor(0.7 * playerSheet.int + 0.3 * playerSheet.cha);
+        case "tinkering":
+            return Math.floor(0.5 * playerSheet.int + 0.5 * playerSheet.dex);
+        case "occult":
+            return Math.floor(1 * playerSheet.int);
         case "atk":
             var inv = playerSheet.inventory;
             if (inv.items[inv.equipped.weapon]) {
                 return inv.items[inv.equipped.weapon].dmg;
             }
-            return 0;
+            return -5; // penalty for unarmed
+        case "mhp": 
+            return 30 + 7 * playerSheet.end;
         case "carryweight":
             return 15 + 3 * playerSheet.str;
         default:
@@ -29,6 +52,7 @@ function getSkill(skill, playerSheet) {
 
 */
 function makeItem(statString) {
+    if (statString === "") return null;
     var tokens = statString.split("; "),
         genericItem = {};
     for (var argument in tokens) {
@@ -234,6 +258,8 @@ function updateCharSheet(message) {
             case "=":
                 // if both the change and the stat being changed are numbers
                 if (numericalChange !== null && typeof newSheet[subArgs[0]] === "number") {
+                    if (subArgs[0] === "hp" && newSheet.hp + numericalChange > getSkill("mhp", newSheet))
+                        numericalChange = getSkill("mhp", newSheet);
                     newSheet[subArgs[0]] = numericalChange;
                 } else if (typeof newSheet[subArgs[0]] === typeof subArgs[1]) { // if not, check if the types match at all
                     newSheet[subArgs[0]] = subArgs[1];
@@ -249,6 +275,8 @@ function updateCharSheet(message) {
                 break;
             case "+":
                 if (isNaN(numericalChange)) return null;
+                if (subArgs[0] === "hp" && newSheet.hp + numericalChange > getSkill("mhp", newSheet))
+                    numericalChange = getSkill("mhp", newSheet) - newSheet.hp;
                 newSheet[subArgs[0]] += numericalChange; // likewise
                 break;
             default:
@@ -345,7 +373,6 @@ module.exports = function(bot) {
         writesheets: function(message) {
             if (dms[message.author.id]) {
                 writeToSheet();
-                console.log(charSheets);
                 bot.sendMessage(message.channel, "_Writing contents of charSheets to permanent storage._");
             } else {
                 bot.sendMessage(message.channel, "_Error: Only DMs can save the current character sheets._");
@@ -356,7 +383,23 @@ module.exports = function(bot) {
             var spoofedMessage = common.spoofAuthor(message);
             if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
             
+            var descMessage = "Description: Creates an item, and gives it to yourself or a player if DM.\n" +
+                              "Syntax: ``!giveitem [item stat]; [item stat]...`` or ``!giveitem ::[player id or alias]:: [item stat];...``\n" +
+                              "Examples: ``!giveitem name=Foo; desc=Bar; weight=0`` ``!giveitem ::Foo:: name=Bar; desc=Hello; weight=1``\n" +
+                              "Note: Stats given must match an item type exactly. To see item types and corresponding stats, use ``!createitem glossary``";
+            var glossaryMessage = "**Basic item:** name, desc, weight\n" +
+                                  "**Ranged weapon:** name, desc, dmg, rolls, accuracy, weight\n" +
+                                  "**Melee weapon:** name, desc, dmg, crit, weight\n" +
+                                  "**Occult weapon:** name, desc, dmg, overcharge, weight\n" +
+                                  "**Armor:** name, desc, dr, weight";
             var words = message.content.split(" ");
+            if (words.length === 2 && words[1] === "?") {
+                bot.sendMessage(message.channel, descMessage);
+                return;
+            } else if (words.length === 2 && words[1] === "glossary") {
+                bot.sendMessage(message.channel, glossaryMessage);
+            }
+            
             words.splice(0, 1);
             message.content = words.join(" ");
             console.log("making item");
@@ -376,12 +419,16 @@ module.exports = function(bot) {
         dropitem: function(message) {
             var spoofedMessage = common.spoofAuthor(message);
             if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            
+            var descMessage = "Description: Remove an item from your, or another player's inventory if you're DM.\n" +
+                              "Syntax: ``!dropitem [inventory slot]`` or ``!dropitem ::[player id or alias]:: [inventory slot]``\n" +
+                              "Examples: ``!dropitem 0`` ``!dropitem ::Foo:: 5``";
             var words = message.content.split(" ");
             if (words.length != 2) {
                 bot.sendMessage(message.channel, common.poorSyntax("!dropitem"));
                 return;
             } else if (words[1] === "?") {
-                // send helpdesk
+                bot.sendMessage(message.channel, descMessage);
                 return;
             } else if (isNaN(parseInt(words[1]))) {
                 bot.sendMessage(message.channel, common.poorSyntax("!dropitem"));
@@ -396,7 +443,7 @@ module.exports = function(bot) {
             return;
         },
         giveitem: function(message) {
-            var tokens = message.content.split(/\s\:\:|\:\:\s/);
+            var tokens = message.content.split(/\s\:\:|\:\:\s|\:\:$/);
             var preSheets = charSheets;
             var target = common.parseTarget(tokens[1], message);
             if (target === null) {
@@ -406,26 +453,36 @@ module.exports = function(bot) {
             tokens.splice(1, 1); //remove the target id
             message.content = tokens.join(" ");
             
+            var descMessage = "Description: Give another player an item in your inventory.\n" +
+                              "Syntax: ``!giveitem ::[player id or alias]:: [slot in your inventory]\n" +
+                              "Example: ``!giveitem ::Foo:: 3";
             var words = message.content.split(" ");
             if (words.length !== 2) {
                 bot.sendMessage(message.channel, common.poorSyntax("!giveitem"));
+                return;
+            } else if (words.length === 2 && words[1] === "?") {
+                bot.sendMessage(message.channel, descMessage);
                 return;
             }
             
             var senderInv = charSheets[message.author.id].inventory;
             // if either operation failed
             if (!addItem(target.id, senderInv.items[words[1]]) || !removeItem(message.author.id, words[1])) {
+                bot.sendMessage(message.channel, "Trade failed.");
                 console.log("failed to trade");
                 charSheets = preSheets; // revert to pre-trade sheets
                 return;
             }
+            bot.sendMessage(message.channel, "Trade completed.");
             console.log("successfully traded");
             return;
         },
         printsheet: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
             var outputString = printSheet(message.author.id);
             if (!outputString) {
-                bot.sendMessage(message.channel, common.poorSyntax("!mysheet"));
+                bot.sendMessage(message.channel, "You do not have a character sheet. Use ``!sheet`` to make one.");
                 return;
             } else {
                 bot.sendMessage(message.channel, outputString);
@@ -433,9 +490,11 @@ module.exports = function(bot) {
             return;
         },
         printinventory: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
             var outputString = printInventory(message.author.id);
             if (!outputString) {
-                bot.sendMessage(message.channel, common.poorSyntax("!myinv"));
+                bot.sendMessage(message.channel, "You do not have a character sheet. Use ``!sheet`` to make one.");
                 return;
             } else {
                 bot.sendMessage(message.channel, outputString);
