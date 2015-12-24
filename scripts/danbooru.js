@@ -9,7 +9,6 @@ module.exports = function(bot) {
         commands: commands,
         dbget: function(message) {
             var words = message.content.split(" "),
-                body = "",
                 searchstring = "http://danbooru.donmai.us/posts.json?tags=",
                 parsed;
             if (words.length === 2 && words[1] === "?") {
@@ -23,7 +22,7 @@ module.exports = function(bot) {
                 bot.sendMessage(message.channel, common.poorSyntax("!danbooru"));
                 return;
             }
-            var response = http.get(searchstring, function(res) {
+            http.get(searchstring, function(res) {
                 var body = "";
                 res.on('data', function(d) {
                     body += d;
