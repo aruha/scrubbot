@@ -14,7 +14,7 @@ var commands = [];
     fill in functions as desired, and create the corresponding
     entries in commands.json.
 */
-module.exports = function(bot, sendSync) {
+module.exports = function(bot) {
     return {
         commands: commands,
         ping: function(message) {
