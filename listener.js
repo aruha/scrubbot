@@ -7,7 +7,6 @@ var scripts = require("./lib/listinitializers.js");
 var common = require("./lib/common.js");
 var handler = require("./lib/handler.js");
 
-
 /*
     Listener for messages.
 */
@@ -19,28 +18,20 @@ bot.on("message", function(message) {
         return;
     }
     
-    if (words[0] === "!!alias" && common.checkPermissions(message)) {
-        var tokens = message.content.split(/(\s\:\:)|(\:\:\s)/), // split the target by " ::" and ":: "
-            target = common.parseTarget(tokens[3], message); // extract the target from the message
-        
-        if (target === null) { // parseTarget found nothing
-            console.log("could not find target, aborting");
-            return;
-        }
-        console.log("id " + message.author.id + " aliasing as id " + target.id);
-        
-        message.author = target; // spoof sender
-        tokens.splice(0, 6); // remove all leading tokens
-        message.content = tokens.join(""); // rejoin
-        
-        // sync words to the spliced text
-        words = message.content.split(" ");
-    }
-
     var permissions = message.channel.permissionsOf(bot.user);
     if (bot.sendSync) {
         messageHandler.handle(bot.sendSync.cmd, bot.sendSync.msg);
     } else if (message.author === bot.user) return;
+    
+    if (words[0] === "!!alias" && common.checkPermissions(message)) {
+        var spoofedMessage = common.spoofAuthor(message);
+        if (spoofedMessage) {
+            message = spoofedMessage;
+            words = message.content.split(" ");
+            words.splice(0, 1);
+            message.content = words.join(" ");
+        }
+    }
     
     if (words[0] === "!help") {
         console.log("event: registered call to !help command");
