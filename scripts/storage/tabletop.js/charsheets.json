@@ -1,38 +1,58 @@
 {
-    "78625384274337792": {
-        "name": "hello",
-        "lv": 1,
-        "alignment": "Hello, world",
+    "78657069317632000": {
+        "name": "",
+        "hp": 1,
+        "alignment": "",
         "race": "",
         "gender": "",
         "hair": "",
         "eyes": "",
-        "age": "0",
-        "height": "0",
-        "weight": "0",
+        "age": "",
+        "height": "",
+        "weight": "",
         "str": 1,
+        "end": 1,
         "per": 1,
         "dex": 1,
-        "con": 1,
         "int": 1,
-        "wis": 50,
         "cha": 1,
         "inventory": {
             "equipped": {
-                "weapon": 0,
+                "weapon": null,
                 "armor": null
             },
             "items": [
                 {
-                    "type": "ranged",
-                    "name": "Gun",
-                    "desc": "A gun",
-                    "dmg": 10,
-                    "rolls": 1,
-                    "accuracy": 5,
-                    "weight": 1
+                    "name": "Foo",
+                    "description": "Bar",
+                    "weight": "1"
                 }
             ]
+        }
+    },
+    "78625384274337792": {
+        "name": "Hello World",
+        "hp": 1,
+        "alignment": "",
+        "race": "",
+        "gender": "",
+        "hair": "",
+        "eyes": "",
+        "age": "",
+        "height": "",
+        "weight": "",
+        "str": 50,
+        "end": 1,
+        "per": 1,
+        "dex": 1,
+        "int": 1,
+        "cha": 1,
+        "inventory": {
+            "equipped": {
+                "weapon": null,
+                "armor": null
+            },
+            "items": []
         }
     }
 }

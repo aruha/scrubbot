@@ -21,6 +21,10 @@
         "!dice": "dice",
         "!sheet": "changesheet",
         "!mysheet": "printsheet",
-        "!myinv": "printinventory"
+        "!myinv": "printinventory",
+        "!writesheets": "writesheets",
+        "!dropitem": "dropitem",
+        "!giveitem": "giveitem",
+        "!createitem": "createitem"
     }
 }

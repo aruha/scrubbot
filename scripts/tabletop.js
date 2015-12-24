@@ -26,6 +26,42 @@ function getSkill(skill, playerSheet) {
 }
 
 /*
+
+*/
+function makeItem(statString) {
+    var tokens = statString.split("; "),
+        genericItem = {};
+    for (var argument in tokens) {
+        argument = tokens[argument];
+        if (argument.match(/^([A-z])+\=+([\-\w\ ])+/g) === null) return false;
+        var subargs = argument.split("=");
+        genericItem[subargs[0]] = subargs[1];
+    }
+    
+    // scope match outside of loop
+    var match;
+    for (var constructor in items) { // for every constructor in items
+        var newConstruct = new items[constructor](); // make an instance of that class
+        match = constructor; // set match to that constructor tentatively
+        console.log(constructor + " - length: " + Object.keys(constructor).length);
+        for (var key_name in newConstruct) { // for every key in that class
+            if (genericItem[key_name] === undefined) match = null; // if a key exists on the item, but not generic, no match
+        }
+        // if everything matched, break loop
+        if (match !== null && Object.keys(newConstruct).length === Object.keys(genericItem).length) break;
+    }
+    // malformed item
+    if (match === null) return null;
+    // create new item to have it as instanceof item class
+    
+    var newItem = new items[constructor]();
+    for (var new_key in newItem) { // for every key in the item class
+        newItem[new_key] = genericItem[new_key]; // set it equal to the given stats
+    }
+    return newItem;
+}
+
+/*
     Adds an item to a player's inventory.
     
     id: id of target
@@ -36,14 +72,16 @@ function addItem(id, item) {
         console.log("no such sheet with id " + id + " to add item");
         return false;
     }
-    
     var invItems = charSheets[id].inventory.items,
         maxWeight = getSkill("carryweight", charSheets[id]),
         invWeight = 0;
     
-    for (var slot in invItems) {
-        invWeight += invItems[slot].weight;
-        if (invWeight > maxWeight) return false; // if the weight limit has been exceeded
+    if (item.weight > maxWeight) return false;
+    if (invItems.length > 0) {
+        for (var slot in invItems) {
+            invWeight += invItems[slot].weight;
+            if (invWeight > maxWeight) return false; // if the weight limit has been exceeded
+        }
     }
     invItems.push(item);
     
@@ -63,14 +101,17 @@ function removeItem(id, slot) {
     }
     
     var inv = charSheets[id].inventory;
+    if (inv.items.length <= slot) return false;
     
     for (var equippedItem in inv.equipped) {
         if (inv.equipped[equippedItem] > slot) {
             inv.equipped[equippedItem] -= 1;
+        } else if (inv.equipped[equippedItem] == slot) {
+            inv.equipped[equippedItem] = null;
         }
     }
     
-    inv.items.splice(slot + 1, 1);
+    inv.items.splice(slot, 1);
     
     charSheets[id].inventory = inv; // save back
     return true;
@@ -151,7 +192,7 @@ function updateCharSheet(message) {
     
     // delete the sheet if the user chooses
     if (words === "$$$DELETE") {
-        return undefined; //"TOBEDELETED";
+        return undefined;
     } else if (words === "$$$NEW") {
         return new items.CharSheet();
     }
@@ -277,13 +318,17 @@ module.exports = function(bot) {
             }
         },
         changesheet: function(message) {
-            var words = message.split(" ");
             var descMessage = "Description: Changes the sheet of the sender.\nSyntax: ``!sheet`` followed by any number of key=value, seperated by ``\"; \"``" + 
                               "\nExample: !sheet name=Hello, world!; alignment=Chaotic Good; str=5; int=7;";
+            
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            
+            var words = message.content.split(" ");
             if (words.length < 2) {
                 bot.sendMessage(message.channel, common.poorSyntax("!sheet"));
                 return;
-            } else if (words.length === 2 && words[1] === "?") {
+            } else if (words[1] === "?") {
                 bot.sendMessage(message.channel, descMessage);
                 return;
             }
@@ -297,40 +342,84 @@ module.exports = function(bot) {
             }
             return;
         },
-        changesheetof: function(message) {
-            var words = message.split(" ");
-            var descMessage = "Description: Changes the sheet of the target.\nSyntax: ``!sheet ::target::`` followed by any number of key=value, seperated by ``\"; \"``" + 
-                              "\nExample: !sheet ::Foobar:: name=Hello, world!; alignment=Chaotic Good; str=5; int=7;";
-            if (words.length < 2) {
-                bot.sendMessage(message.channel, common.poorSyntax("!sheetof"));
-                return;
-            } else if (words.length === 2 && words[1] === "?") {
-                bot.sendMessage(message.channel, descMessage);
-                return;
-            }
-            if (dms[message.author.id]) {
-                var tokens = message.content.split(" :: ");
-                message.author = common.parseTarget(tokens[1]);
-                tokens.splice(1, 1);
-                message.content = tokens.join("");
-                
-                var newSheet = updateCharSheet(message);
-                if (newSheet === null) {
-                    bot.sendMessage(message.channel, common.poorSyntax("!sheet"));
-                    return;
-                } else {
-                    charSheets[message.author.id] = newSheet;
-                }
-            }
-            return;
-        },
         writesheets: function(message) {
             if (dms[message.author.id]) {
                 writeToSheet();
+                console.log(charSheets);
                 bot.sendMessage(message.channel, "_Writing contents of charSheets to permanent storage._");
             } else {
                 bot.sendMessage(message.channel, "_Error: Only DMs can save the current character sheets._");
             }
+            return;
+        },
+        createitem: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            
+            var words = message.content.split(" ");
+            words.splice(0, 1);
+            message.content = words.join(" ");
+            console.log("making item");
+            var newItem = makeItem(message.content);
+            if (newItem !== null) {
+                if (addItem(message.author.id, newItem)) {
+                    console.log("tabletop.js->createitem: added item name " + newItem.name);
+                } else {
+                    console.log("tabletop.js->createitem: weight limit exceeded");
+                }
+            } else {
+                console.log("tabletop.js->createitem: invalid item given");
+                bot.sendMessage(message.channel, common.poorSyntax("!createitem"));
+            }
+            return;
+        },
+        dropitem: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            var words = message.content.split(" ");
+            if (words.length != 2) {
+                bot.sendMessage(message.channel, common.poorSyntax("!dropitem"));
+                return;
+            } else if (words[1] === "?") {
+                // send helpdesk
+                return;
+            } else if (isNaN(parseInt(words[1]))) {
+                bot.sendMessage(message.channel, common.poorSyntax("!dropitem"));
+                return;
+            }
+            
+            if (!removeItem(message.author.id, words[1])) {
+                bot.sendMessage(message.channel, "Could not remove item in slot " + words[1]);
+            } else {
+                bot.sendMessage(message.channel, "Removed item from slot " + words[1]);
+            }
+            return;
+        },
+        giveitem: function(message) {
+            var tokens = message.content.split(/\s\:\:|\:\:\s/);
+            var preSheets = charSheets;
+            var target = common.parseTarget(tokens[1], message);
+            if (target === null) {
+                bot.sendMessage(message.channel, common.poorSyntax("!giveitem"));
+                return;
+            }
+            tokens.splice(1, 1); //remove the target id
+            message.content = tokens.join(" ");
+            
+            var words = message.content.split(" ");
+            if (words.length !== 2) {
+                bot.sendMessage(message.channel, common.poorSyntax("!giveitem"));
+                return;
+            }
+            
+            var senderInv = charSheets[message.author.id].inventory;
+            // if either operation failed
+            if (!addItem(target.id, senderInv.items[words[1]]) || !removeItem(message.author.id, words[1])) {
+                console.log("failed to trade");
+                charSheets = preSheets; // revert to pre-trade sheets
+                return;
+            }
+            console.log("successfully traded");
             return;
         },
         printsheet: function(message) {
