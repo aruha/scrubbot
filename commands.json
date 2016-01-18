@@ -3,15 +3,8 @@
         "!danbooru": "dbget"
     },
     "inspector.js": {
-        "!!inspect": "inspect"
-    },
-    "voice.js": {
-        "!!vjoin": "vjoin",
-        "!!vleave": "vleave",
-        "!!vstop": "vstop",
-        "!!vplay": "vplay",
-        "!!urlplay": "urlplay",
-        "!!ytplay": "ytplay"
+        "!!inspect": "inspect",
+        "!!idlist": "idlist"
     },
     "simple.js": {
         "!getout": "getout",
@@ -20,11 +13,13 @@
     "tabletop.js": {
         "!dice": "dice",
         "!sheet": "changesheet",
-        "!mysheet": "printsheet",
-        "!myinv": "printinventory",
+        "!printsheet": "printsheet",
+        "!printinv": "printinventory",
+        "!printhp": "printhp",
         "!writesheets": "writesheets",
         "!dropitem": "dropitem",
         "!giveitem": "giveitem",
-        "!createitem": "createitem"
+        "!createitem": "createitem",
+        "!equipitem": "equipitem"
     }
 }
