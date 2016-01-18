@@ -1,1 +1,27 @@
-{}
+{
+    "78625384274337792": {
+        "name": "lol",
+        "hp": 1,
+        "alignment": "",
+        "race": "",
+        "gender": "",
+        "hair": "",
+        "eyes": "",
+        "age": "",
+        "height": "",
+        "weight": "",
+        "str": 1,
+        "end": 1,
+        "per": 1,
+        "dex": 1,
+        "int": 1,
+        "cha": 1,
+        "inventory": {
+            "equipped": {
+                "weapon": null,
+                "armor": null
+            },
+            "items": []
+        }
+    }
+}

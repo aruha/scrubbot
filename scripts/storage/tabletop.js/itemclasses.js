@@ -1,4 +1,5 @@
 var Ranged = function() {
+    this.type = "weapon";
     this.name = "";
     this.desc = "";
     this.dmg = 0;
@@ -8,6 +9,7 @@ var Ranged = function() {
 };
 
 var Melee = function() {
+    this.type = "weapon";
     this.name = "";
     this.desc = "";
     this.dmg = 0;
@@ -16,6 +18,7 @@ var Melee = function() {
 };
 
 var Occult = function() {
+    this.type = "weapon";
     this.name = "";
     this.desc = "";
     this.dmg = 0;
@@ -24,6 +27,7 @@ var Occult = function() {
 };
 
 var Armor = function() {
+    this.type = "armor";
     this.name = "";
     this.desc = "";
     this.dr = 0;
@@ -31,6 +35,7 @@ var Armor = function() {
 };
 
 var Item = function() {
+    this.type = "item";
     this.name = "";
     this.desc = "";
     this.weight = 0;

@@ -34,11 +34,11 @@ bot.on("message", function(message) {
     }
     
     if (words[0] === "!help") {
-        console.log("event: registered call to !help command");
+        console.log("event: registered call to !help command by " + message.author.username);
         var out = "";
         for (var key_name in cList) {
             if (key_name.slice(0, 2) !== "!!") {
-                out = out + "``" + key_name + "`` ";
+                out += "``" + key_name + "`` ";
             }
         }
         bot.sendMessage(message.channel, "Available commands: " + out);

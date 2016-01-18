@@ -1,8 +1,9 @@
 var fileName = __filename.slice(__dirname.length + 1),
+    storagePath = "./storage/" + fileName + "/",
     commands = [],
-    charSheets = require("./storage/" + fileName + "/charsheets.json"),
-    fs = require("fs"),
     common = require("../lib/common.js"),
+    charSheets = require(storagePath + "charsheets.json"),
+    fs = require("fs"),
     items = require("./storage/" + fileName + "/itemclasses.js"),
     dms = require("./storage/" + fileName + "/dms.json");
 
@@ -67,22 +68,18 @@ function makeItem(statString) {
     for (var constructor in items) { // for every constructor in items
         var newConstruct = new items[constructor](); // make an instance of that class
         match = constructor; // set match to that constructor tentatively
-        console.log(constructor + " - length: " + Object.keys(constructor).length);
         for (var key_name in newConstruct) { // for every key in that class
-            if (genericItem[key_name] === undefined) match = null; // if a key exists on the item, but not generic, no match
+            if (genericItem[key_name] === undefined && key_name !== "type") match = null; // if a key exists on the item, but not generic, no match
         }
-        // if everything matched, break loop
-        if (match !== null && Object.keys(newConstruct).length === Object.keys(genericItem).length) break;
+        // if everything matched, break loop -- adjust down by 1 to exclude type
+        if (match !== null && Object.keys(newConstruct).length - 1 === Object.keys(genericItem).length) {
+            genericItem.type = newConstruct.type;
+            break;
+        }
     }
     // malformed item
     if (match === null) return null;
-    // create new item to have it as instanceof item class
-    
-    var newItem = new items[constructor]();
-    for (var new_key in newItem) { // for every key in the item class
-        newItem[new_key] = genericItem[new_key]; // set it equal to the given stats
-    }
-    return newItem;
+    return genericItem;
 }
 
 /*
@@ -139,6 +136,27 @@ function removeItem(id, slot) {
     
     charSheets[id].inventory = inv; // save back
     return true;
+}
+
+/*
+    Equip an item...
+*/
+function equipItem(id, itemType, slot) {
+    if (!charSheets[id]) {
+        console.log("no such sheet with id " + id + " to equip item");
+        return false;
+    }
+    var inv = charSheets[id].inventory;
+    if (inv.items.length <= slot) return false;
+    if (inv.items[slot] === undefined) return false;
+    if (inv.items[slot].type !== itemType) return false;
+    for (var equipSlot in inv.equipped) { // for every item slot for equipped items
+        if (equipSlot === itemType) { // if the type matches
+            inv.equipped[itemType] = parseInt(slot);
+            return true;
+        }
+    }
+    return false;
 }
 
 /*
@@ -407,8 +425,10 @@ module.exports = function(bot) {
             if (newItem !== null) {
                 if (addItem(message.author.id, newItem)) {
                     console.log("tabletop.js->createitem: added item name " + newItem.name);
+                    bot.sendMessage(message.channel, "Item added successfully");
                 } else {
                     console.log("tabletop.js->createitem: weight limit exceeded");
+                    bot.sendMessage("Error: Adding item would exceed weight limit.");
                 }
             } else {
                 console.log("tabletop.js->createitem: invalid item given");
@@ -477,6 +497,21 @@ module.exports = function(bot) {
             console.log("successfully traded");
             return;
         },
+        equipitem: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            
+            var words = message.content.split(" ");
+            if (words.length !== 3) {
+                bot.sendMessage(message.channel, common.poorSyntax("!equipitem"));
+                return;
+            } else if (isNaN(parseInt(words[2]))) {
+                bot.sendMessage(message.channel, common.poorSyntax("!equipitem"));
+                return;
+            }
+            equipItem(message.author.id, words[1], words[2]);
+            return;
+        },
         printsheet: function(message) {
             var spoofedMessage = common.spoofAuthor(message);
             if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
@@ -485,7 +520,10 @@ module.exports = function(bot) {
                 bot.sendMessage(message.channel, "You do not have a character sheet. Use ``!sheet`` to make one.");
                 return;
             } else {
-                bot.sendMessage(message.channel, outputString);
+                bot.sendMessage(message.channel, outputString, function(err, msg) {
+                    if (err) console.log(err);
+                    bot.deleteMessage(msg, { wait: 5000 });
+                });
             }
             return;
         },
@@ -497,9 +535,34 @@ module.exports = function(bot) {
                 bot.sendMessage(message.channel, "You do not have a character sheet. Use ``!sheet`` to make one.");
                 return;
             } else {
-                bot.sendMessage(message.channel, outputString);
+                bot.sendMessage(message.channel, outputString, function(err, msg) {
+                    if (err) console.log(err);
+                    bot.deleteMessage(msg, { wait: 5000 });
+                });
             }
             return;
+        },
+        printhp: function(message) {
+            var spoofedMessage = common.spoofAuthor(message);
+            if (spoofedMessage && dms[message.author.id]) message = spoofedMessage;
+            if (!charSheets[message.author.id]) {
+                console.log("no such sheet with id " + message.author.id + " to print hp");
+                return;
+            }
+            var sheet = charSheets[message.author.id];
+            var outputString = message.author.username + " has " + sheet.hp + "/" + getSkill("mhp", sheet) +
+                               " HP left. (";
+            if (sheet.hp > 0) {
+                outputString += "Conscious)";
+            } else if (sheet.hp < -1 * getSkill("mhp", sheet)) {
+                outputString += "Dead)";
+            } else if (sheet.hp <= 0) {
+                outputString += "Unconscious)";
+            }
+            bot.sendMessage(message.channel, outputString, function(err, msg) {
+                if (err) console.log(err);
+                bot.deleteMessage(msg, { wait: 5000 });
+            });
         }
     };
 };
