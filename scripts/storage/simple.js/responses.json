@@ -1,5 +1,5 @@
 ﻿{
-    "responseList": {
+    "simple": {
         "!okita": [
             "mis, get out"
         ],
@@ -43,9 +43,28 @@
             "lel ur such a faggot holy fuck",
             "can u feel the burn shitlord",
             "man ure such a fagot i bet macklemore fuked u"
+        ],
+        "!tama": [
+            "hey, sorry i saw your profile and i just thought you looked cute in your picture. i really wanted to tell you that)) It's really rare to see girls playing video games haha! I don't know why it's a guy thing honestly im like really against misogyny and like ill be the one in the kitchen making sandwiches. We should really play l4d2 sometime its a really cool zombie game with a lot of scary moments, but don't worry ill be there to protect you ;) sorry that wasnt flirtring i swear im just trying to be friendly i really like your profile picture sorry was that too far? Really sorry i'm really shy i don't go out much haha add me on skype we should talk you look really nice and fun xxx"
+        ],
+        "!jay": [
+            "j pls",
+            "jay pls",
+            "j   p l s",
+            "jay bb pls",
+            "beggin u j pls",
+            "j pls bb _pls_",
+            "__**_J PLS_**__",
+            ":100::100::joy::100::100::100::100::100::sweat_drops::sweat_drops::sweat_drops::100::ok_hand::100::100::100::gun::gun::gun:\n:100::100::joy::100::100::100::100::100::sweat_drops::100::sweat_drops::100::ok_hand::100::100::100::gun::100::100:\n:100::100::joy::100::100::100::100::100::sweat_drops::sweat_drops::sweat_drops::100::ok_hand::100::100::100::gun::gun::gun:\n:joy::100::joy::100::100::100::100::100::sweat_drops::100::100::100::ok_hand::100::100::100::100::100::gun:\n:joy::joy::joy::100::100::100::100::100::sweat_drops::100::100::100::ok_hand::ok_hand::ok_hand::100::gun::gun::gun:"
+        ],
+        "!spittake": [
+            "https://i.imgur.com/SyJ3YT5.png"
+        ],
+        "!hue": [
+            "https://i.imgur.com/oR1Jq5q.png"
         ]
     },
-    "sequentialList": {
+    "synchsend": {
         "!nobu": [
             "Nobu", 
             "nobu", 
@@ -72,8 +91,10 @@
             "TRUUUUUUUUUUUUUUUUUUU",
             "UUUUUUUUUUUUUUUUUUUUUUUUUUUU",
             ":joy::joy::joy::joy::joy::sweat_drops::sweat_drops::ok_hand::ok_hand::ok_hand::ok_hand:",
-            ":ok_hand::ok_hand::ok_hand::ok_hand::ok_hand::100::100::100::100::100::100:",
-            ":100::100::100::100::100::100::joy::joy::joy::ok_hand::ok_hand:"
+            ":ok_hand::ok_hand::ok_hand::ok_hand::ok_hand::100::100::100::100::100::100::100::100::100::100::100::100:",
+            ":100::100::100::100::100::100::joy::joy::joy::ok_hand::ok_hand::ok_hand::joy::ok_hand:"
         ]
+    },
+    "imagesend": {
     }
 }
