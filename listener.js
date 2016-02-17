@@ -2,10 +2,15 @@ var Discord = require("discord.js");
 var bot = new Discord.Client();
 
 //setting up environment
-var config = require("./config.json");
-var scripts = require("./lib/listinitializers.js");
-var common = require("./lib/common.js");
-var handler = require("./lib/handler.js");
+var config = require("./json/config.json"),
+    scripts = require("./lib/listinitializers.js"),
+    common = require("./lib/common.js"),
+    handler = require("./lib/handler.js"),
+    triggers = require("./json/triggers.json"); // dohoho
+
+bot.on("debug", function(dbmsg) {
+    console.log("[debug] " + dbmsg);
+});
 
 /*
     Listener for messages.
@@ -18,11 +23,13 @@ bot.on("message", function(message) {
         return;
     }
     
-    var permissions = message.channel.permissionsOf(bot.user);
+    if (!message.channel.permissionsOf(bot.user).hasPermission("sendMessages")) return;
+
     if (bot.sendSync) {
         messageHandler.handle(bot.sendSync.cmd, bot.sendSync.msg);
     } else if (message.author === bot.user) return;
     
+    // hard coded block
     if (words[0] === "!!alias" && common.checkPermissions(message)) {
         var spoofedMessage = common.spoofAuthor(message);
         if (spoofedMessage) {
@@ -31,9 +38,7 @@ bot.on("message", function(message) {
             words.splice(0, 1);
             message.content = words.join(" ");
         }
-    }
-    
-    if (words[0] === "!help") {
+    } else if (words[0] === "!help") {
         console.log("event: registered call to !help command by " + message.author.username);
         var out = "";
         for (var key_name in cList) {
@@ -43,9 +48,15 @@ bot.on("message", function(message) {
         }
         bot.sendMessage(message.channel, "Available commands: " + out);
         return;
-    } else if (words[0].match(/^!{1,2}\w+/g) !== null && permissions.hasPermission("sendMessages")) {
+    }
+    
+    if (words[0].match(/^!{1,2}\w+/g) !== null) { // /^!{1,2}\w+/g
         console.log("event: registered call to " + words[0] + " command by " + message.author.username);
         messageHandler.handle(words[0], message);
+        return;
+    } else if (message.isMentioned(bot.user)) {
+        console.log("event: received mention from " + message.author.username);
+        messageHandler.reply(message);
         return;
     }
 });
