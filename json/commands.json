@@ -10,6 +10,13 @@
         "!getout": "getout",
         "$$$OVERRIDE": "1"
     },
+    "voice.js": {
+        "!!vjoin": "vjoin",
+        "!!vleave": "vleave",
+        "!vstop": "vstop",
+        "!urlplay": "urlplay",
+        "!ytplay": "ytplay"
+    },
     "tabletop.js": {
         "!dice": "dice",
         "!sheet": "changesheet",
