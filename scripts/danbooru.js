@@ -1,7 +1,8 @@
 var http = require("http"),
-    common = require("../lib/common.js");
-
-var fileName = __filename.slice(__dirname.length + 1);
+    common = require("../lib/common.js"),
+    path = require("path"),
+    storagePath = path.resolve(__dirname, "./storage/" + __filename.slice(__dirname.length + 1) + "/");
+    
 var commands = [];
 
 module.exports = function(bot) {

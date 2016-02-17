@@ -1,4 +1,5 @@
-var fileName = __filename.slice(__dirname.length + 1),
+var path = require("path"),
+    storagePath = path.resolve(__dirname, "./storage/" + __filename.slice(__dirname.length + 1) + "/"),
     commands = [],
     common = require("../lib/common.js"),
     Discord = require("discord.js");

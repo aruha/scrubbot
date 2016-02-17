@@ -1,11 +1,11 @@
-var fileName = __filename.slice(__dirname.length + 1),
-    storagePath = "./storage/" + fileName + "/",
+var path = require("path"),
+    storagePath = path.resolve(__dirname, "./storage/" + __filename.slice(__dirname.length + 1) + "/"),
     commands = [],
     common = require("../lib/common.js"),
-    charSheets = require(storagePath + "charsheets.json"),
+    charSheets = require(storagePath + "/charsheets.json"),
     fs = require("fs"),
-    items = require("./storage/" + fileName + "/itemclasses.js"),
-    dms = require("./storage/" + fileName + "/dms.json");
+    items = require(storagePath + "/itemclasses.js"),
+    dms = require(storagePath + "/dms.json");
 
 function getSkill(skill, playerSheet) {
     skill = skill.toLowerCase();
