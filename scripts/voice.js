@@ -1,6 +1,6 @@
 var request = require("superagent"),
     fs = require("fs"),
-    common = require("../lib/common.js");
+    common = require("../lib/common.js"),
     path = require("path"),
     storagePath = path.resolve(__dirname, "./storage/" + __filename.slice(__dirname.length + 1) + "/");
 
