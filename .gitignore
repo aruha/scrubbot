@@ -2,3 +2,5 @@ node_modules
 config.json
 useraliases.json
 *.old
+*.swp
+*.log

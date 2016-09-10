@@ -28,5 +28,9 @@
         "!giveitem": "giveitem",
         "!createitem": "createitem",
         "!equipitem": "equipitem"
+    },
+    "administrative.js": {
+        "!move": "move",
+        "!movelast": "movelast"
     }
 }

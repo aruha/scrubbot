@@ -13,8 +13,9 @@
   "dependencies": {
     "discord.js": "^6.0.0",
     "node-opus": "^0.1.12",
-    "request": "^2.67.0",
-    "ytdl-core": "^0.7.8"
+    "request": "^2.69.0",
+    "ytdl-core": "^0.7.8",
+    "node-opus": "^0.1.12"
   },
   "repository": {
     "type": "git",

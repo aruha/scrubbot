@@ -23,6 +23,10 @@ bot.on("message", function(message) {
         return;
     }
     
+    if (config.logChat) {
+        common.logChat(message);
+    }
+    
     if (!message.channel.permissionsOf(bot.user).hasPermission("sendMessages")) return;
 
     if (bot.sendSync) {
@@ -46,7 +50,10 @@ bot.on("message", function(message) {
                 out += "``" + key_name + "`` ";
             }
         }
-        bot.sendMessage(message.channel, "Available commands: " + out);
+        bot.sendMessage(message.channel, "Available commands: " + out,  function(err, msg) {
+            if (err) console.log(err);
+            bot.deleteMessage(msg, { wait: 10000 });
+        });
         return;
     }
     
@@ -72,5 +79,5 @@ bot.cooldowns = {};
 scripts.initAtlas(bot, atlas);
 scripts.initCommands(atlas, cList);
 messageHandler.init(cList, atlas, bot);
-
+console.log("listener.js: message logging set to " + config.logChat);
 bot.login(config.credentials.email, config.credentials.password);
