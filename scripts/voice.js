@@ -8,6 +8,9 @@ var commands = [];
 
 module.exports = function(bot) {
     var downloadActivity = false;
+    bot.on("dlfinish", function(lastdl) {
+        console.log(lastdl);
+    });
     return {
         commands: commands,
         vjoin: function (message) {
@@ -88,6 +91,6 @@ module.exports = function(bot) {
                     bot.internal.voiceConnection.playFile(storagePath + "/current_yt_audio.mp4");
                 });
             }
-        }
+        },
     };
 };
